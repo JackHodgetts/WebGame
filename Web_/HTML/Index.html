@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            put your page title here!
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link herf="style.css" rel="stylesheet" type="text/css" />
+        <style>
+            body{
+                background-color: aqua;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>
+            <b>My Game</b>
+        </h1>
+        <a href="game.html">Game page</a><br>
+        <a href="">Login page</a><br>
+        <a href="">Register page</a><br>
+        <a href="">404 page</a><br>
+
+
+        <h2 style=" color: green;">This is my new game</h2>
+        <img src="../images/flowers.jpg" style="width: 50%;">
+        <p id="myitem" class="content"><div style="color: blue;"> This game is cool</div></p>
+        <button onclick="alert('It is clicked');"> Click me</button>
+        <p id="result">This is result</p>
+
+        <script>
+            console.log("This is start of my first Script")
+            document.getElementById("myitem").innerHTML = "My game is loading here. Please wait";
+        </script>
+
+        <script src="script.js"></script>
+        <script type="module">
+            import message from "./message.js";
+            document.getElementById("result").innerHTML = message();
+
+        </script>
+    </body>
+</html>
