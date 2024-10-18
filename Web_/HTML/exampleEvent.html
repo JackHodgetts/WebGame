@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Put title here
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="../CSS/style.css" rel="stylesheet" type="text/css">
+        <style>
+            body{
+                background-color: aqua;
+            }
+        </style>
+
+        <body>
+            <h1>
+                my events example 
+            </h1>
+        </body>
+        <p id="demo"> Click me (event test)</p>
+
+        <script>  
+        
+        const clickFunction=()=>{
+            document.getElementById("demo").innerHTML = "This is new content";
+        }
+
+            
+            //This is demo of event listener
+            document.getElementById("demo").addEventListener("click", clickFunction);
+
+            /*
+            Function name: clickFunction
+            Author: Jack
+            Date: 18/10/24
+            */
+           
+        </script>
+
+        <script src="script.js"></script>
+
+
+    </head>
+    </body>
+</html>
