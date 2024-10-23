@@ -5,3 +5,23 @@
 
     text-align: center;
 }
+
+/* .Maze_Background{
+    background-image: url("/Web_/images/Maze.png"); 
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: contain; 
+
+    position: relative;
+} */
+
+/* .Maze_Background::after {
+    background-image: url("/Web_/images/Maze.png");
+    background-size: contain; 
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: pink;
+} */
