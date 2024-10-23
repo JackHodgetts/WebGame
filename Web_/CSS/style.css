@@ -1,9 +1,34 @@
+.margin{
+    margin: 0px;
+}
+
 .centered{
     max-width: fit-content;
     margin-left: auto;
     margin-right: auto;
 
     text-align: center;
+}
+
+.navbar ul{
+    list-style: none;
+    background-color: hsl(0, 0%, 20%);
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+}
+.navbar a{
+    color: white;
+    text-decoration: none;
+    padding: 20px;
+    display: block;
+    text-align: center;
+}
+.navbar a:hover{
+    background-color: hsl(0, 0%, 10%);
+}
+.navbar li{
+    float: left;
 }
 
 /* .Maze_Background{
