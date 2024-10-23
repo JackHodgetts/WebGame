@@ -4,7 +4,8 @@
 
 .font{
     font-size: 20px;
-    font: Verdana;
+    font: Verdana
+    
 }
 
 .centered{
@@ -13,6 +14,27 @@
     margin-right: auto;
 
     text-align: center;
+}
+
+.image{
+
+    isolation: isolate;
+    position: relative;
+}
+
+.image::after{
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    /* background: black; */
+    opacity: 0.5;
+
+    background-image: url("/Web_/images/Maze.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    background-size: cover;
 }
 
 .navbar ul{
