@@ -2,6 +2,11 @@
     margin: 0px;
 }
 
+.font{
+    font-size: 20px;
+    font: Verdana;
+}
+
 .centered{
     max-width: fit-content;
     margin-left: auto;
@@ -15,6 +20,7 @@
     background-color: hsl(0, 0%, 20%);
     padding: 0px;
     margin: 0px;
+    font-size: 18px;
     overflow: hidden;
 }
 .navbar a{
@@ -31,22 +37,6 @@
     float: left;
 }
 
-/* .Maze_Background{
-    background-image: url("/Web_/images/Maze.png"); 
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: contain; 
-
-    position: relative;
-} */
-
-/* .Maze_Background::after {
-    background-image: url("/Web_/images/Maze.png");
-    background-size: contain; 
-    content: '';
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    background: pink;
-} */
+.navbar li2{
+    float: right;
+}
