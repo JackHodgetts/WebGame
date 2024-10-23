@@ -16,7 +16,14 @@
     text-align: center;
 }
 
-.image{
+/* .image{
+    background-image: url("/Web_/images/Maze.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    background-size: cover;
+
+
 
     isolation: isolate;
     position: relative;
@@ -27,15 +34,9 @@
     position: absolute;
     z-index: -1;
     inset: 0;
-    /* background: black; */
-    opacity: 0.5;
-
-    background-image: url("/Web_/images/Maze.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-attachment: fixed;
-    background-size: cover;
-}
+    background: rgb(59, 59, 59);
+    opacity: 0.4;
+} */
 
 .navbar ul{
     list-style: none;
