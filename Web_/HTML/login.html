@@ -2,34 +2,47 @@
 <html>
     <head>
         <title>
-            Login Page
+            Maze Ascendancy - Login Page
         </title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="../CSS/style.css" rel="stylesheet" type="text/css">
         <style>
             body{
-                background-color: rgb(39, 13, 13);
+                background-color: grey;
             }
         </style>
     </head>
 
-    <body>
-        <h1>
-            Logging in
+    <body class="margin">
+        <h1 class="centered" style="color: #ffffff;">
+            <b>Maze Ascendancy</b>
         </h1>
-        <a href="Index.html">
-            Home page
-        </a>
-        <a href="game.html">
-            Game page
-        </a>
-        <a href="Register.html">
-            Register page
-        </a>
-        <a href="404.html">
-            404 page
-        </a>
-        <h2>
-            This is my new game
-        </h2>
+
+        <nav class="navbar">
+            <ul>
+                <li><a href="Index.html">Home page</a></li>
+                <li><a href="game.html">Game page</a></li>
+                <li><a href="gameloading.html">Game loading page</a></li>   
+                <li><a href="404.html">404 page</a></li>
+
+                <li2><a href="login.html">Login page</a></li2>
+                <li2><a href="Register.html">Register page</a></li2>
+            </ul>
+        </nav>
+
+        <main class="centered" style="color: #ffffff;">
+            <h2>This is the login page for the web puzzle game Maze Ascendancy!!!</h2>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde quo quaerat laboriosam cumque, a, quidem, ea laborum perferendis iure repellat quod expedita adipisci ab assumenda nihil rerum quae! Illum, pariatur!</p>
+        </main>
+        
+
+        <form class="centered">
+            <label for="username" style="color: #ffffff;">Username:</label><br>
+            <input type="text" id="username" name="username"><br>
+            <label for="pwd" style="color: #ffffff;">Password:</label><br>
+            <input type="password" id="pwd" name="pwd"><br>
+            <input type="submit" value="Submit"><br>
+        </form>
+    
     </body>
 </html>
