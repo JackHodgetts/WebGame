@@ -15,29 +15,6 @@
 
     text-align: center;
 }
-
-/* .image{
-    background-image: url("/Web_/images/Maze.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-attachment: fixed;
-    background-size: cover;
-
-
-
-    isolation: isolate;
-    position: relative;
-}
-
-.image::after{
-    content: '';
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    background: rgb(59, 59, 59);
-    opacity: 0.4;
-} */
-
 .navbar ul{
     list-style: none;
     background-color: hsl(0, 0%, 20%);
@@ -62,4 +39,22 @@
 
 .navbar li2{
     float: right;
+}
+
+.box{
+    background-color: rgb(167, 167, 167);
+    width: 600px;
+    padding: 100px;
+    margin: auto;
+    margin-top: auto;
+
+}
+
+.errorbox{
+    background-color: rgba(221, 221, 221, 0.596);
+    width: 600px;
+    padding: 100px;
+    margin: auto;
+    margin-top: 200px;
+
 }
