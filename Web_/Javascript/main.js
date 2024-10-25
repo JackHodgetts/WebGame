@@ -3,6 +3,9 @@ import * as THREE from 'three';
 //orbit control
 import { OrbitControls } from 'https://unpkg.com/three@0.169.0/examples/jsm/controls/OrbitControls.js';
 
+import { GLTFLoader } from "https://unpkg.com/three@0.169.0/examples/jsm/loaders/GLTFLoader.js";
+ 
+
 //add orbit control
 let controls;
  
@@ -10,6 +13,9 @@ let controls;
 let upstate = false;
 let downstate = false;
 let changed = false;
+
+//GLTF
+const loader  = new GLTFLoader()
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -23,8 +29,8 @@ const geometry = new THREE.BoxGeometry( 1, 1, 1 ); // makes geometry
 const material = new THREE.MeshBasicMaterial( { color: 0xedf50a } );
 const material2 = new THREE.MeshBasicMaterial( { color: 0xf2304a } ); // makes the material
 
-// const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
-// scene.add( directionalLight );
+const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+ scene.add( directionalLight );
 
 const cube = new THREE.Mesh( geometry, material ); // makes the mesh for cube 1
 const cube2 = new THREE.Mesh( geometry, material2 );
@@ -103,6 +109,7 @@ function animate() {
     //change colour
 
 
+
 	renderer.render( scene, camera );
 
 }
@@ -167,3 +174,30 @@ const movedown = ()=>{
 
 document.getElementById("upbutton").addEventListener("click", moveup);
 document.getElementById("downbutton").addEventListener("click", movedown);
+ 
+ 
+///////GLTF loader
+// Load a glTF resource
+let mesh;
+loader.load(
+    '../3dmodels/low_poly_helicopter.glb',  // called when the resource is loaded
+ 
+    (gltf) => {
+        mesh = gltf.scene;
+        mesh.scale.set(0.3, 0.3, 0.3);
+        scene.add(mesh); //add GLTF to the scene
+ 
+    },
+    // called when loading is in progresses
+ 
+    (xhr) => {
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+ 
+    },
+    // called when loading has errors
+ 
+    (error) => {
+        console.log('An error happened' + error);
+    }
+);
+ 
