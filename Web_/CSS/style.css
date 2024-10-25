@@ -4,8 +4,18 @@
 
 .font{
     font-size: 20px;
-    font: Verdana
+    font: Verdana;
+    color: white;
+    list-style: none;
     
+}
+
+.overlay-text{
+    position: absolute;
+    top: 20%;
+    left: 20%;
+    transform: translate(-50%, -50%);
+    color: white;
 }
 
 .centered{

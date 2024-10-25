@@ -1,5 +1,16 @@
 import * as THREE from 'three';
 
+//orbit control
+import { OrbitControls } from 'https://unpkg.com/three@0.169.0/examples/jsm/controls/OrbitControls.js';
+
+//add orbit control
+let controls;
+ 
+//add control variables
+let upstate = false;
+let downstate = false;
+let changed = false;
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
@@ -8,27 +19,89 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 renderer.setAnimationLoop( animate );
 document.body.appendChild( renderer.domElement );
 
-const geometry = new THREE.BoxGeometry( 5, 1, 1 ); // makes geometry
+const geometry = new THREE.BoxGeometry( 1, 1, 1 ); // makes geometry
 const material = new THREE.MeshBasicMaterial( { color: 0xedf50a } );
-const material2 = new THREE.MeshBasicMaterial( { color: 0xf2304a } );
-const material3 = new THREE.MeshBasicMaterial( { color: 0xf2304a, wireframe : true } ); // makes the material
-const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
-scene.add( directionalLight );
+const material2 = new THREE.MeshBasicMaterial( { color: 0xf2304a } ); // makes the material
+
+// const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+// scene.add( directionalLight );
+
 const cube = new THREE.Mesh( geometry, material ); // makes the mesh for cube 1
 const cube2 = new THREE.Mesh( geometry, material2 );
-const cube3 = new THREE.Mesh( geometry, material3 ); // makes the mesh for cube 2
-scene.add( cube ); // adds cube to the scene
-scene.add( cube2);
-scene.add( cube3);// add cube to the scene
+
+
+//group cubes with cube 1 and cube 2
+let group = new THREE.Group();
+group.add(cube);
+group.add(cube2);
+
+
+//group cube with the subgroup
+let group2 = new THREE.Group();
+group2.add(cube);
+group2.add(group);
+
+scene.add(group2);
+
+
+//function geneerate mesh
+const addPlane = (x, y, w , h, materialaspect)=> {
+    //initialte the plan
+
+    const geometry3 = new THREE.PlaneGeometry( w, h, 2 );
+    const material3 = new THREE.MeshBasicMaterial( materialaspect );
+
+    const plane = new THREE.Mesh( geometry3, material3 );
+
+    plane.position.x = x;
+    plane.position.y = y;
+    plane.rotation.x = -Math.PI/2;
+
+    scene.add( plane );
+
+
+}
+
+const texture = new THREE.TextureLoader().load('../images/goldpattern.png');
+const materialAspectFloor = {
+    map:texture,
+    side: THREE.DoubleSide,
+    transparent:true
+}
+addPlane(0, -3.6, 30, 30, materialAspectFloor );
+
 
 camera.position.z = 10; // camera position
+cube.position.y = 2;
 cube2.position.y = 2;
-cube3.position.x = -5;
+cube2.position.x = 2
+
+//add player
+const player = new THREE.Mesh(geometry, material);
+scene.add(player);
+
+
 
 function animate() {
 
-	cube.rotation.x += 0.01;
-	cube.rotation.y += 1;
+	// cube.rotation.x += 0.01;
+	// cube.rotation.y += 1;
+
+    group.rotation.y += 0.03;
+    group.rotation.x += 0.03;
+    group2.rotation.x += 0.06;
+
+    //add key control logic
+    if(upstate){
+        player.position.y += 0.02;
+
+    }else if(downstate){
+        player.position.y -= 0.02;
+
+    }
+
+    //change colour
+
 
 	renderer.render( scene, camera );
 
@@ -45,3 +118,52 @@ function onWindowResize(){
 }
 
 window.addEventListener( "resize", onWindowResize );
+
+//skybox function
+//Skybox function
+const createskybox = ()=>{
+    let bgMesh;
+   
+    const loader = new THREE.TextureLoader();
+    loader.load("../images/galaxy.jpg", function(texture){
+        const sphereGeometry = new THREE.SphereGeometry( 100, 60, 40 );
+        const sphereMaterial = new THREE.MeshBasicMaterial({
+            map: texture,
+            side: THREE.DoubleSide
+        })
+ 
+        bgMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        scene.add(bgMesh);
+ 
+    })
+   
+}
+ 
+createskybox();
+
+//create orbit control
+
+const createControls =()=>{
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.update();
+}
+
+//update the control fucntion
+createControls();
+
+//create button logic
+
+const moveup = ()=>{
+    upstate = true;
+    downstate = false;
+}
+
+const movedown = ()=>{
+    upstate = false;
+    downstate = true;
+}
+
+//add DOM event functiom
+
+document.getElementById("upbutton").addEventListener("click", moveup);
+document.getElementById("downbutton").addEventListener("click", movedown);
