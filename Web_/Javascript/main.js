@@ -29,7 +29,7 @@ const geometry = new THREE.BoxGeometry( 1, 1, 1 ); // makes geometry
 const material = new THREE.MeshBasicMaterial( { color: 0xedf50a } );
 const material2 = new THREE.MeshBasicMaterial( { color: 0xf2304a } ); // makes the material
 
-const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+const directionalLight = new THREE.DirectionalLight( 0xffffff, 5 );
  scene.add( directionalLight );
 
 const cube = new THREE.Mesh( geometry, material ); // makes the mesh for cube 1
@@ -180,7 +180,7 @@ document.getElementById("downbutton").addEventListener("click", movedown);
 // Load a glTF resource
 let mesh;
 loader.load(
-    '../3dmodels/low_poly_helicopter.glb',  // called when the resource is loaded
+    '../3dmodels/Maze_One.glb',  // called when the resource is loaded
  
     (gltf) => {
         mesh = gltf.scene;
