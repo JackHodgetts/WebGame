@@ -22,22 +22,27 @@ let lastAction;
 const clock = new THREE.Clock();
 
 //GLTF
-const loader  = new GLTFLoader()
+const loader  = new GLTFLoader();
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth / 2, window.innerHeight/ 2 );
+
+
+renderer.setSize( window.innerWidth / 2, window.innerHeight/ 2);
+
 renderer.setAnimationLoop( animate );
 document.body.appendChild( renderer.domElement );
+document.querySelector("body").insertBefore(renderer.domElement, document.querySelector(".font"))
 
 const geometry = new THREE.BoxGeometry( 1, 1, 1 ); // makes geometry
 const material = new THREE.MeshBasicMaterial( { color: 0xedf50a } );
 const material2 = new THREE.MeshBasicMaterial( { color: 0xf2304a } ); // makes the material
 
 const directionalLight = new THREE.DirectionalLight( 0xffffff, 5 );
- scene.add( directionalLight );
+// light.position.set( 0, 1, 0 );
+scene.add( directionalLight );
 
 const cube = new THREE.Mesh( geometry, material ); // makes the mesh for cube 1
 const cube2 = new THREE.Mesh( geometry, material2 );
@@ -131,8 +136,7 @@ function animate() {
 
 function onWindowResize(){
 
-    camera.aspect = window.innerWidth / window.innerWidth;
-    camera.aspect = window.innerHeight / window.innerHeight;
+    camera.aspect = window.innerWidth / window.innerHeight;
 
     camera.updateProjectionMatrix();
 
@@ -199,7 +203,7 @@ loader.load(
  
     (gltf) => {
         mesh = gltf.scene;
-        mesh.scale.set(1, 1, 1);
+        mesh.scale.set(0.5, 0.5, 0.5);
         scene.add(mesh); //add GLTF to the scene
 
         mixer = new THREE.AnimationMixer(mesh);
