@@ -14,6 +14,13 @@ let upstate = false;
 let downstate = false;
 let changed = false;
 
+let animationActions = [];
+let mixer;
+let activeAction;
+let lastAction;
+
+const clock = new THREE.Clock();
+
 //GLTF
 const loader  = new GLTFLoader()
 
@@ -108,6 +115,14 @@ function animate() {
 
     //change colour
 
+    const render=()=>{
+        requestAnimationFrame( render );
+
+        if( mixer ) mixer.update( 0.01 );
+
+        renderer.render(scene, camera);
+    }
+
 
 
 	renderer.render( scene, camera );
@@ -184,8 +199,16 @@ loader.load(
  
     (gltf) => {
         mesh = gltf.scene;
-        mesh.scale.set(0.3, 0.3, 0.3);
+        mesh.scale.set(1, 1, 1);
         scene.add(mesh); //add GLTF to the scene
+
+        mixer = new THREE.AnimationMixer(mesh);
+
+        gltf.animations.forEach( (clip ) => {
+            const animationActions = mixer.clipAction( clip);
+        })
+
+        animationActions.push(animationActions);
  
     },
     // called when loading is in progresses
