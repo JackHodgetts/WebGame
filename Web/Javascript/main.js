@@ -151,8 +151,8 @@ const createskybox = ()=>{
     let bgMesh;
    
     const loader = new THREE.TextureLoader();
-    loader.load("../images/galaxy.jpg", function(texture){
-        const sphereGeometry = new THREE.SphereGeometry( 100, 60, 40 );
+    loader.load("../images/SkyBox.jpg", function(texture){
+        const sphereGeometry = new THREE.SphereGeometry( 120, 60, 40 );
         const sphereMaterial = new THREE.MeshBasicMaterial({
             map: texture,
             side: THREE.DoubleSide
