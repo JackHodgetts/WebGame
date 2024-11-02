@@ -199,7 +199,7 @@ document.getElementById("downbutton").addEventListener("click", movedown);
 // Load a glTF resource
 let mesh;
 loader.load(
-    '../3dmodels/Maze_One.glb',  // called when the resource is loaded
+    'Web_/3dmodels/Maze_One.glb',  // called when the resource is loaded
  
     (gltf) => {
         mesh = gltf.scene;
