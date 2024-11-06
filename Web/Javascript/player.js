@@ -29,14 +29,14 @@ scene.add(directionalLight);
 
 // Load GLTF model
 const loader = new GLTFLoader();
-loader.load('../models/Maze_One.glb', (gltf) => {
+loader.load('../models/Maze_One.glb',(gltf)=>{
     const mesh = gltf.scene;
     mesh.scale.set(0.5, 0.5, 0.5);
     scene.add(mesh);
 
     mixer = new THREE.AnimationMixer(mesh);
-    
-    gltf.animations.forEach((clip) => {
+
+    gltf.animations.forEach((clip)=>{
         const action = mixer.clipAction(clip);
         animationActions.push(action);
         action.play();
@@ -47,35 +47,48 @@ loader.load('../models/Maze_One.glb', (gltf) => {
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
-function keyDownHandler(event) {
-    if (event.code === "KeyW") wPressed = true;
-    if (event.code === "KeyA") aPressed = true;
-    if (event.code === "KeyS") sPressed = true;
-    if (event.code === "KeyD") dPressed = true;
+function keyDownHandler(event){
+    if (event.code === "KeyW"){
+        wPressed = true;}
+    if (event.code === "KeyA"){
+        aPressed = true;}
+    if (event.code === "KeyS"){
+        sPressed = true;}
+    if (event.code === "KeyD"){
+        dPressed = true;}
 }
 
-function keyUpHandler(event) {
-    if (event.code === "KeyW") wPressed = false;
-    if (event.code === "KeyA") aPressed = false;
-    if (event.code === "KeyS") sPressed = false;
-    if (event.code === "KeyD") dPressed = false;
+function keyUpHandler(event){
+    if (event.code === "KeyW"){
+        wPressed = false;}
+    if (event.code === "KeyA"){
+        aPressed = false;}
+    if (event.code === "KeyS"){
+        sPressed = false;}
+    if (event.code === "KeyD"){
+        dPressed = false;}
 }
 
 // Movement functions
-const moveSide = () => {
-    if (dPressed) camera.position.x += 0.1;
-    if (aPressed) camera.position.x -= 0.1;
+const moveSide=()=>{
+    if (dPressed){
+        camera.position.x += 0.1;}
+    if (aPressed){
+        camera.position.x -= 0.1;}
 };
 
-const moveforward = () => {
-    if (wPressed) camera.position.z -= 0.1;
-    if (sPressed) camera.position.z += 0.1;
+const moveforward=()=>{
+    if (wPressed){
+        camera.position.z -= 0.1;}
+    if (sPressed){
+        camera.position.z += 0.1;}
 };
 
 // Animate function
 function animate() {
     const delta = clock.getDelta();
-    if (mixer) mixer.update(delta);
+    if (mixer){ 
+        mixer.update(delta);}
     moveSide();
     moveforward();
     renderer.render(scene, camera);
@@ -84,7 +97,7 @@ function animate() {
 animate();
 
 // Handle window resize
-window.addEventListener("resize", () => {
+window.addEventListener("resize",()=>{
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
