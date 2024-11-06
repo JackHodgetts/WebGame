@@ -22,9 +22,10 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
 document.body.appendChild(renderer.domElement);
 camera.position.z = 10;
+camera.position.y = 10;
 
 // Lighting
-const directionalLight = new THREE.DirectionalLight(0xffffff, 5);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 40);
 scene.add(directionalLight);
 
 // Load GLTF model
