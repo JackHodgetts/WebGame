@@ -58,9 +58,6 @@ const createLights = ()=>{
 }
 
 createLights();
-// const directionalLight = new THREE.DirectionalLight( 0xffffff, 5 );
-// // light.position.set( 0, 1, 0 );
-// scene.add( directionalLight );
 
 const cube = new THREE.Mesh( geometry, material ); // makes the mesh for cube 1
 const cube2 = new THREE.Mesh( geometry, material2 );
