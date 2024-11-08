@@ -10,6 +10,13 @@
     
 }
 
+/* .gameCanvas{
+    width: 800px;
+    height: 500px;
+    display: block;
+    margin: auto;
+} */
+
 .overlay-text{
     position: absolute;
     top: 20%;

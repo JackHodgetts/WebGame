@@ -4,7 +4,11 @@ import * as THREE from 'three';
 import { OrbitControls } from 'https://unpkg.com/three@0.169.0/examples/jsm/controls/OrbitControls.js';
 
 import { GLTFLoader } from "https://unpkg.com/three@0.169.0/examples/jsm/loaders/GLTFLoader.js";
+
+import Stats from 'http://unpkg.com/three@0.169.0/examples/jsm/libs/stats.module.js'
  
+
+let stats;
 
 //add orbit control
 let controls;
@@ -14,7 +18,7 @@ let upstate = false;
 let downstate = false;
 let changed = false;
 
-const canvas = document.querySelector("#gameCanvas");
+//const canvas = document.querySelector("#gameCanvas")
 
 let animationActions = [];
 let mixer;
@@ -29,10 +33,10 @@ const loader  = new GLTFLoader();
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-const renderer = new THREE.WebGLRenderer({ canvas: canvas});
+const renderer = new THREE.WebGLRenderer();
 
 
-renderer.setSize(canvas.clientwidth, canvas.clientheight, false);
+renderer.setSize( window.innerWidth / 2, window.innerHeight/ 2);
 
 renderer.setAnimationLoop( animate );
 document.body.appendChild( renderer.domElement );
@@ -49,6 +53,11 @@ scene.add( directionalLight );
 const cube = new THREE.Mesh( geometry, material ); // makes the mesh for cube 1
 const cube2 = new THREE.Mesh( geometry, material2 );
 
+//FPS
+
+stats = new Stats();
+document.body.appendChild(stats.dom);
+
 
 //group cubes with cube 1 and cube 2
 let group = new THREE.Group();
@@ -62,6 +71,8 @@ group2.add(cube);
 group2.add(group);
 
 scene.add(group2);
+
+//const geometry = 
 
 
 //function geneerate mesh
@@ -104,8 +115,10 @@ scene.add(player);
 
 function animate() {
 
-	// cube.rotation.x += 0.01;
-	// cube.rotation.y += 1;
+    stats.update();
+
+	//cube.rotation.x += 0.01;
+	//cube.rotation.y += 1;
 
     group.rotation.y += 0.03;
     group.rotation.x += 0.03;
@@ -199,13 +212,15 @@ document.getElementById("downbutton").addEventListener("click", movedown);
  
 ///////GLTF loader
 // Load a glTF resource
+
+//added new function to make more than one object using glb
 let mesh;
 loader.load(
     '../models/Maze_One.glb',  // called when the resource is loaded
  
     (gltf) => {
         mesh = gltf.scene;
-        mesh.scale.set(0.5, 0.5, 0.5);
+        mesh.scale.set(0.1, 0.1, 0.1);
         scene.add(mesh); //add GLTF to the scene
 
         mixer = new THREE.AnimationMixer(mesh);
