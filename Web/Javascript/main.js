@@ -14,6 +14,8 @@ let upstate = false;
 let downstate = false;
 let changed = false;
 
+const canvas = document.querySelector("#gameCanvas");
+
 let animationActions = [];
 let mixer;
 let activeAction;
@@ -27,10 +29,10 @@ const loader  = new GLTFLoader();
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({ canvas: canvas});
 
 
-renderer.setSize( window.innerWidth / 2, window.innerHeight/ 2);
+renderer.setSize(canvas.clientwidth, canvas.clientheight, false);
 
 renderer.setAnimationLoop( animate );
 document.body.appendChild( renderer.domElement );
