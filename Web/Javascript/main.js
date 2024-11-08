@@ -18,7 +18,7 @@ let upstate = false;
 let downstate = false;
 let changed = false;
 
-//const canvas = document.querySelector("#gameCanvas")
+const canvas = document.querySelector("#gameCanvas");
 
 let animationActions = [];
 let mixer;
@@ -33,14 +33,13 @@ const loader  = new GLTFLoader();
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({ canvas: canvas });
 
-
-renderer.setSize( window.innerWidth / 2, window.innerHeight/ 2);
+renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
 renderer.setAnimationLoop( animate );
-document.body.appendChild( renderer.domElement );
-document.querySelector("body").insertBefore(renderer.domElement, document.querySelector(".font"))
+// document.body.appendChild( renderer.domElement );
+// document.querySelector("body").insertBefore(renderer.domElement, document.querySelector(".font"))
 
 const geometry = new THREE.BoxGeometry( 1, 1, 1 ); // makes geometry
 const material = new THREE.MeshBasicMaterial( { color: 0xedf50a } );

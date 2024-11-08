@@ -10,12 +10,12 @@
     
 }
 
-/* .gameCanvas{
-    width: 800px;
-    height: 500px;
+.gameCanvas{
+    width: 1000px;
+    height: 800px;
     display: block;
     margin: auto;
-} */
+}
 
 .overlay-text{
     position: absolute;
