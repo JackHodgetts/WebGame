@@ -10,6 +10,8 @@ import Stats from 'http://unpkg.com/three@0.169.0/examples/jsm/libs/stats.module
 
 let stats;
 
+//loading mulitple GLTF
+
 //add orbit control
 let controls;
  
@@ -18,8 +20,6 @@ let upstate = false;
 let downstate = false;
 let changed = false;
 
-const canvas = document.querySelector("#gameCanvas");
-
 let animationActions = [];
 let mixer;
 let activeAction;
@@ -27,19 +27,13 @@ let lastAction;
 
 const clock = new THREE.Clock();
 
-//GLTF
-const loader  = new GLTFLoader();
-
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-
+const canvas = document.querySelector("#gameCanvas");
 const renderer = new THREE.WebGLRenderer({ canvas: canvas });
-
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
 renderer.setAnimationLoop( animate );
-// document.body.appendChild( renderer.domElement );
-// document.querySelector("body").insertBefore(renderer.domElement, document.querySelector(".font"))
 
 const geometry = new THREE.BoxGeometry( 1, 1, 1 ); // makes geometry
 const material = new THREE.MeshBasicMaterial( { color: 0xedf50a } );
@@ -241,6 +235,7 @@ document.getElementById("downbutton").addEventListener("click", movedown);
 // Load a glTF resource
 
 //added new function to make more than one object using glb
+const loader  = new GLTFLoader();
 let mesh;
 loader.load(
     '../models/Maze_One.glb',  // called when the resource is loaded

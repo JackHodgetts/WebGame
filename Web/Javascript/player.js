@@ -24,9 +24,17 @@ document.body.appendChild(renderer.domElement);
 camera.position.z = 10;
 camera.position.y = 10;
 
-// Lighting
-const directionalLight = new THREE.DirectionalLight(0xffffff, 40);
-scene.add(directionalLight);
+//Lights
+const createLights = ()=>{
+    const ambientLight = new THREE.HemisphereLight(0xddeeff, 0x202020, 0.8);
+
+    const mainLight = new THREE.DirectionalLight(0xffffff, 1);
+
+    mainLight.position.set(10, 10, 10);
+    scene.add( ambientLight, mainLight);
+}
+
+createLights();
 
 // Load GLTF model
 const loader = new GLTFLoader();
@@ -93,7 +101,21 @@ function animate() {
     moveSide();
     moveforward();
     renderer.render(scene, camera);
-    requestAnimationFrame(animate);
+    requestAnimationFrame(animate); 
+
+    let originalPoint = cube.position
+    for (let i = 0,len = cube.vertices.length; i < len; i++) {
+        const vertex = cube.vertices[i]
+        //const directionVector = vertex.sub(originalPoint)
+        const ray = new THREE.Raycaster(originalPoint,direction)
+        let collisionResults = ray.intersectObjects( staticObjects )
+        if(collisionResults.length  > 0 && collisionResults[0].distance < 0.5 ){
+            console.log("yes");
+            speed = 0
+            cube.position.y = 0.5
+        }
+     } 
+	cube.position.y -= speed * delta
 }
 animate();
 
