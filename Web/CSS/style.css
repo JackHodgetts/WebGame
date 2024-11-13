@@ -31,6 +31,19 @@
 
     text-align: center;
 }
+
+.description{
+    max-width: fit-content;
+    margin-left: 50px;
+    margin-right: 50px;
+
+    text-align: center;
+
+    font-size: 20px;
+    font: Verdana;
+    color: white;
+    list-style: none;
+}
 .navbar ul{
     list-style: none;
     background-color: hsl(0, 0%, 20%);
