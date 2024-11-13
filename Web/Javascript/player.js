@@ -15,14 +15,16 @@ let aPressed = false;
 let sPressed = false;
 let dPressed = false;
 
+const walls = []; 
+
 // Scene, camera, and renderer setup
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
+renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-camera.position.z = 10;
-camera.position.y = 10;
+camera.position.z = -10;
+camera.position.y = 2;
 
 //Lights
 const createLights = ()=>{
@@ -42,6 +44,13 @@ loader.load('../models/Maze_One.glb',(gltf)=>{
     const mesh = gltf.scene;
     mesh.scale.set(0.5, 0.5, 0.5);
     scene.add(mesh);
+
+    // Assuming the walls are part of the mesh structure:
+    mesh.traverse((child) => {
+        if (child.isMesh) {
+            walls.push(child); // Add each wall to the walls array
+        }
+    });
 
     mixer = new THREE.AnimationMixer(mesh);
 
@@ -79,19 +88,64 @@ function keyUpHandler(event){
 }
 
 // Movement functions
-const moveSide=()=>{
-    if (dPressed){
-        camera.position.x += 0.1;}
-    if (aPressed){
-        camera.position.x -= 0.1;}
+const moveSide = () => {
+    if (dPressed) {
+        camera.position.x += 0.1;
+        if (checkCollisions()) camera.position.x -= 0.1; // Undo move if collision
+    }
+    if (aPressed) {
+        camera.position.x -= 0.1;
+        if (checkCollisions()) camera.position.x += 0.1; // Undo move if collision
+    }
 };
 
-const moveforward=()=>{
-    if (wPressed){
-        camera.position.z -= 0.1;}
-    if (sPressed){
-        camera.position.z += 0.1;}
+const moveForward = () => {
+    if (wPressed) {
+        camera.position.z -= 0.1;
+        if (checkCollisions()) camera.position.z += 0.1; // Undo move if collision
+    }
+    if (sPressed) {
+        camera.position.z += 0.1;
+        if (checkCollisions()) camera.position.z -= 0.1; // Undo move if collision
+    }
 };
+
+
+// Raycaster setup for multiple directions
+const directions = [
+    new THREE.Vector3(0, 0, -1),  // north
+    new THREE.Vector3(0, 0, 1),   // south
+    new THREE.Vector3(-1, 0, 0),  // west
+    new THREE.Vector3(1, 0, 0),   // east
+    new THREE.Vector3(-1, 0, -1), // northwest
+    new THREE.Vector3(1, 0, -1),  // northeast
+    new THREE.Vector3(-1, 0, 1),  // southwest
+    new THREE.Vector3(1, 0, 1)    // southeast
+];
+
+// Create raycasters for each direction
+const raycasters = directions.map(dir => new THREE.Raycaster(camera.position, dir.normalize()));
+
+// Function to update raycaster origins
+function updateRaycasters() {
+    raycasters.forEach((raycaster, i) => {
+        raycaster.set(camera.position, directions[i].clone().normalize());
+    });
+}
+
+// Check collisions in each direction
+function checkCollisions() {
+    updateRaycasters(); // Update raycaster positions to current player position
+
+    for (let raycaster of raycasters) {
+        const collisions = raycaster.intersectObjects(walls); // Walls is an array of maze wall objects
+
+        if (collisions.length > 0 && collisions[0].distance < 0.5) {
+            return true; // Collision detected within 0.5 units
+        }
+    }
+    return false;
+}
 
 // Animate function
 function animate() {
@@ -99,23 +153,10 @@ function animate() {
     if (mixer){ 
         mixer.update(delta);}
     moveSide();
-    moveforward();
+    moveForward();
     renderer.render(scene, camera);
     requestAnimationFrame(animate); 
 
-    let originalPoint = cube.position
-    for (let i = 0,len = cube.vertices.length; i < len; i++) {
-        const vertex = cube.vertices[i]
-        //const directionVector = vertex.sub(originalPoint)
-        const ray = new THREE.Raycaster(originalPoint,direction)
-        let collisionResults = ray.intersectObjects( staticObjects )
-        if(collisionResults.length  > 0 && collisionResults[0].distance < 0.5 ){
-            console.log("yes");
-            speed = 0
-            cube.position.y = 0.5
-        }
-     } 
-	cube.position.y -= speed * delta
 }
 animate();
 
