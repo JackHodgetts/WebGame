@@ -25,6 +25,10 @@ let mixer;
 let activeAction;
 let lastAction;
 
+//Timer
+let startCountDown = setInterval(countdown, 1000);
+let timeLeft = 60;
+
 const clock = new THREE.Clock();
 
 const scene = new THREE.Scene();
@@ -95,6 +99,19 @@ for (let i = 0; i < 2000; i ++){
     scene.add(object);
 }
 
+
+function countdown(){
+    timeLeft--;
+    timer.innerText = timeLeft;
+
+    if(timeLeft === 0){
+        gameOver();
+    }
+}
+
+function gameOver(){
+    clearInterval(startCountDown);
+}
 
 //function geneerate mesh
 const addPlane = (x, y, w , h, materialaspect)=> {
@@ -242,7 +259,7 @@ loader.load(
  
     (gltf) => {
         mesh = gltf.scene;
-        mesh.scale.set(0.1, 0.1, 0.1);
+        mesh.scale.set(0.5, 0.5, 0.5);
         scene.add(mesh); //add GLTF to the scene
 
         mixer = new THREE.AnimationMixer(mesh);
