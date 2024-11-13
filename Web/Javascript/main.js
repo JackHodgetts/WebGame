@@ -283,4 +283,34 @@ loader.load(
         console.log('An error happened' + error);
     }
 );
+
+loader.load(
+    '../models/Door.glb',  // called when the resource is loaded
+ 
+    (gltf) => {
+        mesh = gltf.scene;
+        mesh.scale.set(0.5, 0.5, 0.5);
+        scene.add(mesh); //add GLTF to the scene
+
+        mixer = new THREE.AnimationMixer(mesh);
+
+        gltf.animations.forEach( (clip ) => {
+            const animationActions = mixer.clipAction( clip);
+        })
+
+        animationActions.push(animationActions);
+ 
+    },
+    // called when loading is in progresses
+ 
+    (xhr) => {
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+ 
+    },
+    // called when loading has errors
+ 
+    (error) => {
+        console.log('An error happened' + error);
+    }
+);
  
