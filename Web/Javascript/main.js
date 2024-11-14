@@ -54,7 +54,8 @@ loader.load('../models/Maze_One.glb', (gltf) => {
     const mesh = gltf.scene;
     mesh.scale.set(0.5, 0.5, 0.5);
     scene.add(mesh);
-    mesh.traverse((child) => { if (child.isMesh) walls.push(child); });
+    mesh.traverse((child) => { 
+        if (child.isMesh) walls.push(child); });
 
     mixer = new THREE.AnimationMixer(mesh);
     gltf.animations.forEach((clip) => {
@@ -120,16 +121,24 @@ document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
 function keyDownHandler(event) {
-    if (event.code === "KeyW") wPressed = true;
-    if (event.code === "KeyA") aPressed = true;
-    if (event.code === "KeyS") sPressed = true;
-    if (event.code === "KeyD") dPressed = true;
+    if (event.code === "KeyW") {
+        wPressed = true;}
+    if (event.code === "KeyA") {
+        aPressed = true};
+    if (event.code === "KeyS") {
+        sPressed = true;}
+    if (event.code === "KeyD") {
+        dPressed = true;}
 }
 function keyUpHandler(event) {
-    if (event.code === "KeyW") wPressed = false;
-    if (event.code === "KeyA") aPressed = false;
-    if (event.code === "KeyS") sPressed = false;
-    if (event.code === "KeyD") dPressed = false;
+    if (event.code === "KeyW") {
+        wPressed = false;}
+    if (event.code === "KeyA") {
+        aPressed = false;}
+    if (event.code === "KeyS") {
+        sPressed = false;}
+    if (event.code === "KeyD") {
+        dPressed = false;}
 }
 
 // Movement functions
