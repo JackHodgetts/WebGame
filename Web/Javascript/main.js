@@ -1,316 +1,212 @@
+// Imports and setup
 import * as THREE from 'three';
-
-//orbit control
 import { OrbitControls } from 'https://unpkg.com/three@0.169.0/examples/jsm/controls/OrbitControls.js';
-
 import { GLTFLoader } from "https://unpkg.com/three@0.169.0/examples/jsm/loaders/GLTFLoader.js";
+import Stats from 'http://unpkg.com/three@0.169.0/examples/jsm/libs/stats.module.js';
 
-import Stats from 'http://unpkg.com/three@0.169.0/examples/jsm/libs/stats.module.js'
- 
-
-let stats;
-
-//loading mulitple GLTF
-
-//add orbit control
-let controls;
- 
-//add control variables
-let upstate = false;
-let downstate = false;
-let changed = false;
-
-let animationActions = [];
-let mixer;
-let activeAction;
-let lastAction;
-
-//Timer
-let startCountDown = setInterval(countdown, 1000);
-let timeLeft = 60;
-
+let stats, controls, mixer;
+const animationActions = [];
 const clock = new THREE.Clock();
+let wPressed = false;
+let aPressed = false;
+let sPressed = false;
+let dPressed = false;
+let upstate = false; 
+let downstate = false;
+let timeLeft = 60;
+const walls = [];
 
+// Scene, camera, and renderer setup
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const canvas = document.querySelector("#gameCanvas");
 const renderer = new THREE.WebGLRenderer({ canvas: canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+camera.position.set(0, 2, 30);
 
-renderer.setAnimationLoop( animate );
-
-const geometry = new THREE.BoxGeometry( 1, 1, 1 ); // makes geometry
-const material = new THREE.MeshBasicMaterial( { color: 0xedf50a } );
-const material2 = new THREE.MeshBasicMaterial( { color: 0xf2304a } ); // makes the material
-
-
-//Lights
-const createLights = ()=>{
-    const ambientLight = new THREE.HemisphereLight(0xddeeff, 0x202020, 0.8);
-
-    const mainLight = new THREE.DirectionalLight(0xffffff, 1);
-
-    mainLight.position.set(10, 10, 10);
-    scene.add( ambientLight, mainLight);
-}
-
-createLights();
-
-const cube = new THREE.Mesh( geometry, material ); // makes the mesh for cube 1
-const cube2 = new THREE.Mesh( geometry, material2 );
-
-//FPS
-
+// Stats for FPS display
 stats = new Stats();
 document.body.appendChild(stats.dom);
 
-
-//group cubes with cube 1 and cube 2
-let group = new THREE.Group();
-group.add(cube);
-group.add(cube2);
-
-
-//group cube with the subgroup
-let group2 = new THREE.Group();
-group2.add(cube);
-group2.add(group);
-
-scene.add(group2);
-
-const geometry5 = new THREE.BoxGeometry(20, 20, 20);
-
-for (let i = 0; i < 2000; i ++){
-
-    const object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial ({ color: Math.random() * 0xffffff}));
-
-    object.position.x = Math.random() * 800 - 400;
-    object.position.y = Math.random() * 800 - 400;
-    object.position.z = Math.random() * 800 - 400;
-
-    object.rotation.x = Math.random() * 2 * Math.PI;
-    object.rotation.y = Math.random() * 2 * Math.PI;
-    object.rotation.z = Math.random() * 2 * Math.PI;
-
-    object.scale.x = Math.random() + 5;
-    object.scale.y = Math.random() + 5;
-    object.scale.z = Math.random() + 5;
-    
-    scene.add(object);
-}
-
-
-function countdown(){
+// Timer countdown
+let startCountDown = setInterval(countdown, 1000);
+function countdown() {
     timeLeft--;
-    timer.innerText = timeLeft;
-
-    if(timeLeft === 0){
-        gameOver();
-    }
+    document.getElementById("timer").innerText = timeLeft;
+    if (timeLeft === 0) gameOver();
 }
-
-function gameOver(){
+function gameOver() {
     clearInterval(startCountDown);
 }
 
-//function geneerate mesh
-const addPlane = (x, y, w , h, materialaspect)=> {
-    //initialte the plan
+// Lights
+const createLights = () => {
+    const ambientLight = new THREE.HemisphereLight(0xddeeff, 0x202020, 0.8);
+    const mainLight = new THREE.DirectionalLight(0xffffff, 1);
+    mainLight.position.set(10, 10, 10);
+    scene.add(ambientLight, mainLight);
+};
+createLights();
 
-    const geometry3 = new THREE.PlaneGeometry( w, h, 2 );
-    const material3 = new THREE.MeshBasicMaterial( materialaspect );
+// GLTF loader
+const loader = new GLTFLoader();
+loader.load('../models/Maze_One.glb', (gltf) => {
+    const mesh = gltf.scene;
+    mesh.scale.set(0.5, 0.5, 0.5);
+    scene.add(mesh);
+    mesh.traverse((child) => { if (child.isMesh) walls.push(child); });
 
-    const plane = new THREE.Mesh( geometry3, material3 );
+    mixer = new THREE.AnimationMixer(mesh);
+    gltf.animations.forEach((clip) => {
+        const action = mixer.clipAction(clip);
+        animationActions.push(action);
+        action.play();
+    });
+});
 
-    plane.position.x = x;
-    plane.position.y = y;
-    plane.rotation.x = -Math.PI/2;
+// Maze door loading
+loader.load('../models/Door.glb', (gltf) => {
+    const mesh = gltf.scene;
+    mesh.scale.set(0.5, 0.5, 0.5);
+    scene.add(mesh);
 
-    scene.add( plane );
+    const doorMixer = new THREE.AnimationMixer(mesh);
+    gltf.animations.forEach((clip) => {
+        const action = doorMixer.clipAction(clip);
+        animationActions.push(action);
+        action.play();
+    });
+});
 
+// Skybox
+const createskybox = () => {
+    const loader = new THREE.TextureLoader();
+    loader.load("../images/SkyBox.jpg", (texture) => {
+        const sphereGeometry = new THREE.SphereGeometry(240, 120, 80);
+        const sphereMaterial = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+        const bgMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        scene.add(bgMesh);
+    });
+};
+createskybox();
 
+// Basic objects and groups
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({ color: 0xedf50a });
+const cube = new THREE.Mesh(geometry, material);
+cube.position.set(0, 2, 0);
+
+const material2 = new THREE.MeshBasicMaterial({ color: 0xf2304a });
+const cube2 = new THREE.Mesh(geometry, material2);
+cube2.position.set(2, 2, 0);
+
+let group = new THREE.Group();
+group.add(cube, cube2);
+let group2 = new THREE.Group();
+group2.add(cube, group);
+scene.add(group2);
+
+// Random boxes in scene
+for (let i = 0; i < 2000; i++) {
+    const object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: Math.random() * 0xffffff }));
+    object.position.set(Math.random() * 800 - 400, Math.random() * 800 - 400, Math.random() * 800 - 400);
+    object.rotation.set(Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI);
+    object.scale.set(Math.random() + 5, Math.random() + 5, Math.random() + 5);
+    scene.add(object);
 }
 
-const texture = new THREE.TextureLoader().load('../images/goldpattern.png');
-const materialAspectFloor = {
-    map:texture,
-    side: THREE.DoubleSide,
-    transparent:true
+// Key event listeners
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+
+function keyDownHandler(event) {
+    if (event.code === "KeyW") wPressed = true;
+    if (event.code === "KeyA") aPressed = true;
+    if (event.code === "KeyS") sPressed = true;
+    if (event.code === "KeyD") dPressed = true;
 }
-addPlane(0, -3.6, 30, 30, materialAspectFloor );
+function keyUpHandler(event) {
+    if (event.code === "KeyW") wPressed = false;
+    if (event.code === "KeyA") aPressed = false;
+    if (event.code === "KeyS") sPressed = false;
+    if (event.code === "KeyD") dPressed = false;
+}
+
+// Movement functions
+const moveSide = () => {
+    if (dPressed) {
+        camera.position.x += 0.1;
+        if (checkCollisions()) camera.position.x -= 0.1; // Undo move if collision
+    }
+    if (aPressed) {
+        camera.position.x -= 0.1;
+        if (checkCollisions()) camera.position.x += 0.1; // Undo move if collision
+    }
+};
+
+const moveForward = () => {
+    if (wPressed) {
+        camera.position.z -= 0.1;
+        if (checkCollisions()) camera.position.z += 0.1; // Undo move if collision
+    }
+    if (sPressed) {
+        camera.position.z += 0.1;
+        if (checkCollisions()) camera.position.z -= 0.1; // Undo move if collision
+    }
+};
 
 
-camera.position.z = 10; // camera position
-cube.position.y = 2;
-cube2.position.y = 2;
-cube2.position.x = 2
+// Raycaster setup for collision detection
+const directions = [
+    new THREE.Vector3(0, 0, -1),  // north
+    new THREE.Vector3(0, 0, 1),   // south
+    new THREE.Vector3(-1, 0, 0),  // west
+    new THREE.Vector3(1, 0, 0),   // east
+    new THREE.Vector3(-1, 0, -1), // northwest
+    new THREE.Vector3(1, 0, -1),  // northeast
+    new THREE.Vector3(-1, 0, 1),  // southwest
+    new THREE.Vector3(1, 0, 1)    // southeast
+];
 
-//add player
-const player = new THREE.Mesh(geometry, material);
-scene.add(player);
+const raycasters = directions.map(dir => new THREE.Raycaster(camera.position, dir.normalize()));
+function updateRaycasters() { 
+    raycasters.forEach((raycaster, i) => { 
+        raycaster.set(camera.position, directions[i].normalize()); 
+    }); }
+function checkCollisions() {
+    updateRaycasters();
+    for (let raycaster of raycasters) {
+        if (raycaster.intersectObjects(walls).some(collision => collision.distance < 0.5)) return true;
+    }
+    return false;
+}
 
-
-
+// Animation loop
 function animate() {
-
-    stats.update();
-
-	//cube.rotation.x += 0.01;
-	//cube.rotation.y += 1;
-
+    const delta = clock.getDelta();
+    if (mixer) mixer.update(delta);
+    moveSide();
+    moveForward();
     group.rotation.y += 0.03;
     group.rotation.x += 0.03;
     group2.rotation.x += 0.06;
-
-    //add key control logic
-    if(upstate){
-        player.position.y += 0.02;
-
-    }else if(downstate){
-        player.position.y -= 0.02;
-
-    }
-
-    //change colour
-
-    const render=()=>{
-        requestAnimationFrame( render );
-
-        if( mixer ) mixer.update( 0.01 );
-
-        renderer.render(scene, camera);
-    }
-
-
-
-	renderer.render( scene, camera );
-
+    stats.update();
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
 }
+animate();
 
-function onWindowResize(){
-
+// Resize handler
+window.addEventListener("resize", () => {
     camera.aspect = window.innerWidth / window.innerHeight;
-
     camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
 
-    renderer.setSize( window.innerWidth, window.innerHeight );
-}
+// Orbit controls
+controls = new OrbitControls(camera, renderer.domElement);
+controls.update();
 
-window.addEventListener( "resize", onWindowResize );
-
-//skybox function
-//Skybox function
-const createskybox = ()=>{
-    let bgMesh;
-   
-    const loader = new THREE.TextureLoader();
-    loader.load("../images/SkyBox.jpg", function(texture){
-        const sphereGeometry = new THREE.SphereGeometry( 240, 120, 80 );
-        const sphereMaterial = new THREE.MeshBasicMaterial({
-            map: texture,
-            side: THREE.DoubleSide
-        })
- 
-        bgMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
-        scene.add(bgMesh);
- 
-    })
-   
-}
- 
-createskybox();
-
-//create orbit control
-
-const createControls =()=>{
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.update();
-}
-
-//update the control fucntion
-createControls();
-
-//create button logic
-
-const moveup = ()=>{
-    upstate = true;
-    downstate = false;
-}
-
-const movedown = ()=>{
-    upstate = false;
-    downstate = true;
-}
-
-//add DOM event functiom
-
-document.getElementById("upbutton").addEventListener("click", moveup);
-document.getElementById("downbutton").addEventListener("click", movedown);
- 
- 
-///////GLTF loader
-// Load a glTF resource
-
-//added new function to make more than one object using glb
-const loader  = new GLTFLoader();
-let mesh;
-loader.load(
-    '../models/Maze_One.glb',  // called when the resource is loaded
- 
-    (gltf) => {
-        mesh = gltf.scene;
-        mesh.scale.set(0.5, 0.5, 0.5);
-        scene.add(mesh); //add GLTF to the scene
-
-        mixer = new THREE.AnimationMixer(mesh);
-
-        gltf.animations.forEach( (clip ) => {
-            const animationActions = mixer.clipAction( clip);
-        })
-
-        animationActions.push(animationActions);
- 
-    },
-    // called when loading is in progresses
- 
-    (xhr) => {
-        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
- 
-    },
-    // called when loading has errors
- 
-    (error) => {
-        console.log('An error happened' + error);
-    }
-);
-
-loader.load(
-    '../models/Door.glb',  // called when the resource is loaded
- 
-    (gltf) => {
-        mesh = gltf.scene;
-        mesh.scale.set(0.5, 0.5, 0.5);
-        scene.add(mesh); //add GLTF to the scene
-
-        mixer = new THREE.AnimationMixer(mesh);
-
-        gltf.animations.forEach( (clip ) => {
-            const animationActions = mixer.clipAction( clip);
-        })
-
-        animationActions.push(animationActions);
- 
-    },
-    // called when loading is in progresses
- 
-    (xhr) => {
-        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
- 
-    },
-    // called when loading has errors
- 
-    (error) => {
-        console.log('An error happened' + error);
-    }
-);
- 
+// Button event listeners for player movement
+document.getElementById("upbutton").addEventListener("click", () => { upstate = true; downstate = false; });
+document.getElementById("downbutton").addEventListener("click", () => { upstate = false; downstate = true; });
