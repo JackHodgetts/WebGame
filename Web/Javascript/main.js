@@ -33,7 +33,8 @@ let startCountDown = setInterval(countdown, 1000);
 function countdown() {
     timeLeft--;
     document.getElementById("timer").innerText = timeLeft;
-    if (timeLeft === 0) gameOver();
+    if (timeLeft === 0) {
+        gameOver();}
 }
 function gameOver() {
     clearInterval(startCountDown);
@@ -145,22 +146,26 @@ function keyUpHandler(event) {
 const moveSide = () => {
     if (dPressed) {
         camera.position.x += 0.1;
-        if (checkCollisions()) camera.position.x -= 0.1; // Undo move if collision
+        if (checkCollisions()) {
+            camera.position.x -= 0.1;} // Undo move if collision
     }
     if (aPressed) {
         camera.position.x -= 0.1;
-        if (checkCollisions()) camera.position.x += 0.1; // Undo move if collision
+        if (checkCollisions()) {
+            camera.position.x += 0.1;} // Undo move if collision
     }
 };
 
 const moveForward = () => {
     if (wPressed) {
         camera.position.z -= 0.1;
-        if (checkCollisions()) camera.position.z += 0.1; // Undo move if collision
+        if (checkCollisions()) {
+            camera.position.z += 0.1;} // Undo move if collision
     }
     if (sPressed) {
         camera.position.z += 0.1;
-        if (checkCollisions()) camera.position.z -= 0.1; // Undo move if collision
+        if (checkCollisions()) {
+            camera.position.z -= 0.1;} // Undo move if collision
     }
 };
 
@@ -185,7 +190,8 @@ function updateRaycasters() {
 function checkCollisions() {
     updateRaycasters();
     for (let raycaster of raycasters) {
-        if (raycaster.intersectObjects(walls).some(collision => collision.distance < 0.5)) return true;
+        if (raycaster.intersectObjects(walls).some(collision => collision.distance < 0.5)) {
+            return true;}
     }
     return false;
 }
