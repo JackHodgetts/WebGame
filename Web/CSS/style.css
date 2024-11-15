@@ -73,12 +73,12 @@
 .box{
     background-color: rgb(167, 167, 167);
     width: 600px;
+    /* height: 400px; */
     padding: 50px;
     margin: auto;
     margin-top: auto;
 
 }
-
 .errorbox{
     background-color: rgba(221, 221, 221, 0.596);
     width: 600px;
