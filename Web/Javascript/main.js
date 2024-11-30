@@ -16,6 +16,11 @@ let downstate = false;
 let timeLeft = 60;
 const walls = [];
 
+let lookSpeed = 0.1; // Sensitivity for looking around
+let moveSpeed = 0.1; // Speed of movement
+let yaw = 0; // Left/Right rotation
+let pitch = 0; // Up/Down rotation
+
 // Scene, camera, and renderer setup
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -23,6 +28,8 @@ const canvas = document.querySelector("#gameCanvas");
 const renderer = new THREE.WebGLRenderer({ canvas: canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 camera.position.set(0, 2, 30);
+
+const pitchLimit = Math.PI / 2 - 0.1; 
 
 // Stats for FPS display
 stats = new Stats();
@@ -122,51 +129,86 @@ document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
 function keyDownHandler(event) {
-    if (event.code === "KeyW") {
-        wPressed = true;}
-    if (event.code === "KeyA") {
-        aPressed = true};
-    if (event.code === "KeyS") {
-        sPressed = true;}
-    if (event.code === "KeyD") {
-        dPressed = true;}
+    switch (event.code) {
+        case "ArrowUp": // Look up
+            pitch = Math.max(pitch + lookSpeed, -pitchLimit);
+            break;
+        case "ArrowDown": // Look down
+            pitch = Math.min(pitch - lookSpeed, pitchLimit);
+            break;
+        case "ArrowLeft": // Look left
+            yaw += lookSpeed;
+            break;
+        case "ArrowRight": // Look right
+            yaw -= lookSpeed;
+            break;
+        case "KeyW": // Move forward
+            wPressed = true;
+            break;
+        case "KeyS": // Move backward
+            sPressed = true;
+            break;
+        case "KeyA": // Strafe left
+            aPressed = true;
+            break;
+        case "KeyD": // Strafe right
+            dPressed = true;
+            break;
+    }
 }
 function keyUpHandler(event) {
-    if (event.code === "KeyW") {
-        wPressed = false;}
-    if (event.code === "KeyA") {
-        aPressed = false;}
-    if (event.code === "KeyS") {
-        sPressed = false;}
-    if (event.code === "KeyD") {
-        dPressed = false;}
+    switch (event.code) {
+        case "KeyW":
+            wPressed = false;
+            break;
+        case "KeyS":
+            sPressed = false;
+            break;
+        case "KeyA":
+            aPressed = false;
+            break;
+        case "KeyD":
+            dPressed = false;
+            break;
+    }
 }
 
 // Movement functions
-const moveSide = () => {
-    if (dPressed) {
-        camera.position.x += 0.1;
+const movePlayer = () => {
+    const direction = new THREE.Vector3();
+    camera.getWorldDirection(direction);
+
+    // Forward/backward movement
+    if (wPressed) {
+        camera.position.addScaledVector(direction, moveSpeed);
         if (checkCollisions()) {
-            camera.position.x -= 0.1;} // Undo move if collision
+            camera.position.addScaledVector(direction, -moveSpeed);} // Undo move if collision
+    }
+    if (sPressed) {
+        camera.position.addScaledVector(direction, -moveSpeed);
+        if (checkCollisions()) {
+            camera.position.addScaledVector(direction, moveSpeed);} // Undo move if collision
+    }
+
+    // Sideways movement
+    const right = new THREE.Vector3();
+    right.crossVectors(camera.up, direction).normalize(); // Calculate right vector
+
+    if (dPressed) {
+        camera.position.addScaledVector(right, -moveSpeed);
+        if (checkCollisions()) {
+            camera.position.addScaledVector(right, moveSpeed);} // Undo move if collision
     }
     if (aPressed) {
-        camera.position.x -= 0.1;
+        camera.position.addScaledVector(right, moveSpeed);
         if (checkCollisions()) {
-            camera.position.x += 0.1;} // Undo move if collision
+            camera.position.addScaledVector(right, -moveSpeed);} // Undo move if collision
     }
 };
 
-const moveForward = () => {
-    if (wPressed) {
-        camera.position.z -= 0.1;
-        if (checkCollisions()) {
-            camera.position.z += 0.1;} // Undo move if collision
-    }
-    if (sPressed) {
-        camera.position.z += 0.1;
-        if (checkCollisions()) {
-            camera.position.z -= 0.1;} // Undo move if collision
-    }
+const CameraRotation = () => {
+    camera.rotation.x = pitch; // Up/down
+    camera.rotation.y = yaw; // Left/right
 };
 
 
@@ -200,8 +242,9 @@ function checkCollisions() {
 function animate() {
     const delta = clock.getDelta();
     if (mixer) mixer.update(delta);
-    moveSide();
-    moveForward();
+
+    movePlayer();
+    CameraRotation();
     group.rotation.y += 0.03;
     group.rotation.x += 0.03;
     group2.rotation.x += 0.06;
@@ -218,9 +261,6 @@ window.addEventListener("resize", () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Orbit controls
-controls = new OrbitControls(camera, renderer.domElement);
-controls.update();
 
 // Button event listeners for player movement
 document.getElementById("upbutton").addEventListener("click", () => { upstate = true; downstate = false; });
