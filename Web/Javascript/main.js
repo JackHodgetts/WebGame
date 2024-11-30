@@ -211,7 +211,6 @@ const CameraRotation = () => {
     camera.rotation.y = yaw; // Left/right
 };
 
-
 // Raycaster setup for collision detection
 const directions = [
     new THREE.Vector3(0, 0, -1),  // north
