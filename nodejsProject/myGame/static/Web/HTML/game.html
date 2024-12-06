@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Maze Ascendancy - Gamepage
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="../CSS/style.css" rel="stylesheet" type="text/css">
+        <style>
+            body{
+                background-color:grey;
+            }
+        </style>
+    </head>
+
+    <body class="margin">
+        <h1 class="centered" style="color: #ffffff;">
+            <b>Maze Ascendancy</b>
+        </h1>
+
+        <nav class="navbar">
+            <ul>
+                <li><a href="Index.html">Home page</a></li>
+                <li><a href="game.html">Game page</a></li>
+                <li><a href="gameloading.html">Game loading page</a></li>   
+                <li><a href="404.html">404 page</a></li>
+
+                <li2><a href="login.html">Login page</a></li2>
+                <li2><a href="Register.html">Register page</a></li2>
+            </ul>
+        </nav>
+
+        <div class="centered" style="color: #ffffff;">
+            <h2>This is the game page for the web puzzle game Maze Ascendancy!!!</h2>
+            
+        </div>
+
+            <div class="overlay-text">
+                <h1>My Game</h1>
+                <div>Health: </div>
+                <div>Score: </div>
+                <div>Timer: <span id="timer"> 60</span></div>
+                <button id="upbutton">Up</button>
+                <button id="downbutton">Down</button><br>
+                <audio controls>
+                    <source src="../images/bell-98033.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+
+            <div>
+                <canvas id="gameCanvas">
+                <script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js">    </script>
+    
+                <script type="importmap">  {    "imports": {      "three": "https://unpkg.com/three@0.169.0/build/three.module.js"    }  }    </script>
+    
+        
+                <script type="module" src="../Javascript/main.js"></script>
+                </canvas>
+            </div>
+
+        <div class="font">
+        <p class="centered" style="color: #ffffff;" >Controls</p><br>
+        <li class="centered" style="color: #ffffff;"> Movement - WASD</li>
+        <li class="centered" style="color: #ffffff;"> Sprint - Shift</li>
+        <li class="centered" style="color: #ffffff;"> Interact - E key</li>
+        <li class="centered" style="color: #ffffff;"> TBC</li>
+        </div>
+    </body>
+</html>
