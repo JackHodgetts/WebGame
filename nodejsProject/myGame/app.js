@@ -23,7 +23,23 @@ con.connect(function(err) {
 app.use(express.static('static'));
 
 app.get('/', (req, res) => {
-  res.send('Hello World!:)')
+  res.sendFile(__dirname + '/static/HTML/Index.html')
+})
+
+app.get('/game', (req, res) => {
+  res.sendFile(__dirname + '/static/HTML/game.html')
+})
+
+app.get('/login', (req, res) => {
+  res.sendFile(__dirname + '/static/HTML/login.html')
+})
+
+app.get('/register', (req, res) => {
+  res.sendFile(__dirname + '/static/HTML/Register.html')
+})
+
+app.get('/error', (req, res) => {
+  res.sendFile(__dirname + '/static/HTML/404.html')
 })
 
 app.get('/some', (req, res) => {
@@ -37,5 +53,3 @@ app.get('/test', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
-
-console.log('Im working')
