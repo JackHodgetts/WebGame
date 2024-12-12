@@ -8,18 +8,14 @@ let stats, controls, mixer;
 const animationActions = [];
 const clock = new THREE.Clock();
 let wPressed = false;
-let aPressed = false;
 let sPressed = false;
-let dPressed = false;
-let upstate = false; 
-let downstate = false;
 let timeLeft = 60;
-const walls = [];
+const walls = []; // Making an array for the walls of Maze
+const buttons = []; // Making na array for the buttons around the Maze
 
-let lookSpeed = 0.1; // Sensitivity for looking around
-let moveSpeed = 0.1; // Speed of movement
+let lookSpeed = 0.05;
+let moveSpeed = 0.15;
 let yaw = 0; // Left/Right rotation
-let pitch = 0; // Up/Down rotation
 
 // Scene, camera, and renderer setup
 const scene = new THREE.Scene();
@@ -28,6 +24,7 @@ const canvas = document.querySelector("#gameCanvas");
 const renderer = new THREE.WebGLRenderer({ canvas: canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 camera.position.set(0, 2, 30);
+//camera.rotation.set(30, 0, 0);
 
 const pitchLimit = Math.PI / 2 - 0.1; 
 
@@ -124,35 +121,48 @@ for (let i = 0; i < 2000; i++) {
     scene.add(object);
 }
 
+// Create Buttons
+function createButton(position) {
+    const buttonBaseGeometry = new THREE.CylinderGeometry(0.5, 0.5, 3, 15);
+    const buttonBaseMaterial = new THREE.MeshBasicMaterial({ color: 0x808080 });
+    const buttonBase = new THREE.Mesh(buttonBaseGeometry, buttonBaseMaterial);
+    buttonBase.position.set(position.x, position.y, position.z);
+
+    const buttonGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.5, 15);
+    const buttonMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const button = new THREE.Mesh(buttonGeometry, buttonMaterial);
+    button.position.set(position.x, position.y + 1.5, position.z);
+
+    const buttonGroup = new THREE.Group();
+    buttonGroup.add(buttonBase, button);
+    scene.add(buttonGroup);
+
+    buttons.push(buttonGroup);
+}
+
+// Spawn Buttons
+createButton({ x: 10.5, y: 0, z: 5 });
+createButton({ x: -7, y: 0, z: 1 });
+createButton({ x: -13, y: 0, z: -15 });
+createButton({ x: -10.5, y: 0, z: 18 });
+
 // Key event listeners
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
 function keyDownHandler(event) {
     switch (event.code) {
-        case "ArrowUp": // Look up
-            pitch = Math.max(pitch + lookSpeed, -pitchLimit);
-            break;
-        case "ArrowDown": // Look down
-            pitch = Math.min(pitch - lookSpeed, pitchLimit);
-            break;
-        case "ArrowLeft": // Look left
-            yaw += lookSpeed;
-            break;
-        case "ArrowRight": // Look right
-            yaw -= lookSpeed;
-            break;
         case "KeyW": // Move forward
             wPressed = true;
             break;
         case "KeyS": // Move backward
             sPressed = true;
             break;
-        case "KeyA": // Strafe left
-            aPressed = true;
+        case "KeyA": // Turn left
+            yaw += lookSpeed;
             break;
-        case "KeyD": // Strafe right
-            dPressed = true;
+        case "KeyD": // Turn right
+            yaw -= lookSpeed;
             break;
     }
 }
@@ -163,12 +173,6 @@ function keyUpHandler(event) {
             break;
         case "KeyS":
             sPressed = false;
-            break;
-        case "KeyA":
-            aPressed = false;
-            break;
-        case "KeyD":
-            dPressed = false;
             break;
     }
 }
@@ -182,33 +186,19 @@ const movePlayer = () => {
     if (wPressed) {
         camera.position.addScaledVector(direction, moveSpeed);
         if (checkCollisions()) {
-            camera.position.addScaledVector(direction, -moveSpeed);} // Undo move if collision
+            camera.position.addScaledVector(direction, -moveSpeed); // Undo move if collision
+        }
     }
     if (sPressed) {
         camera.position.addScaledVector(direction, -moveSpeed);
         if (checkCollisions()) {
-            camera.position.addScaledVector(direction, moveSpeed);} // Undo move if collision
-    }
-
-    // Sideways movement
-    const right = new THREE.Vector3();
-    right.crossVectors(camera.up, direction).normalize(); // Calculate right vector
-
-    if (dPressed) {
-        camera.position.addScaledVector(right, -moveSpeed);
-        if (checkCollisions()) {
-            camera.position.addScaledVector(right, moveSpeed);} // Undo move if collision
-    }
-    if (aPressed) {
-        camera.position.addScaledVector(right, moveSpeed);
-        if (checkCollisions()) {
-            camera.position.addScaledVector(right, -moveSpeed);} // Undo move if collision
+            camera.position.addScaledVector(direction, moveSpeed); // Undo move if collision
+        }
     }
 };
 
 const CameraRotation = () => {
-    camera.rotation.x = pitch; // Up/down
-    camera.rotation.y = yaw; // Left/right
+    camera.rotation.y = yaw; // Left/right rotation
 };
 
 // Raycaster setup for collision detection
@@ -224,17 +214,41 @@ const directions = [
 ];
 
 const raycasters = directions.map(dir => new THREE.Raycaster(camera.position, dir.normalize()));
+
 function updateRaycasters() { 
     raycasters.forEach((raycaster, i) => { 
         raycaster.set(camera.position, directions[i].normalize()); 
     }); }
+
 function checkCollisions() {
     updateRaycasters();
     for (let raycaster of raycasters) {
         if (raycaster.intersectObjects(walls).some(collision => collision.distance < 0.5)) {
             return true;}
     }
-    return false;
+
+        // Check for button collisions
+        if (checkButtonCollision()) {
+            return true; // Button collision detected
+        }
+}
+
+function checkButtonCollision() {
+    // Iterate through each button in the scene
+    for (let buttonGroup of buttons) {
+        // Get the button base mesh and the actual button mesh
+        const button = buttonGroup.children[1]; // Assuming the button mesh is the second child
+
+        // Create a bounding box around the button
+        const buttonBoundingBox = new THREE.Box3().setFromObject(button);
+
+        // Check if the camera (player) position is inside the bounding box of any button
+        if (buttonBoundingBox.containsPoint(camera.position)) {
+            return true; // Collision detected with the button
+        }
+    }
+
+    return false; // No collision detected
 }
 
 // Animation loop
@@ -259,8 +273,3 @@ window.addEventListener("resize", () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
-
-// Button event listeners for player movement
-document.getElementById("upbutton").addEventListener("click", () => { upstate = true; downstate = false; });
-document.getElementById("downbutton").addEventListener("click", () => { upstate = false; downstate = true; });

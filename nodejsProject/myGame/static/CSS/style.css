@@ -17,6 +17,34 @@
     margin: auto;
 }
 
+@media (max-width: 480px) {
+    /* Styles for mobile devices */
+    body {
+        background-color: lightgray;
+    }
+
+    .navbar ul {
+        font-size: 14px;
+        padding: 5px;
+    }
+
+    .navbar li {
+        width: 100%;
+        float: none;
+    }
+
+    .overlay-text {
+        top: 15%;
+        left: 15%;
+        font-size: 12px;
+    }
+
+    #gameCanvas {
+        width: 100%;
+        height: auto;
+    }
+}
+
 .overlay-text{
     position: absolute;
     top: 20%;
