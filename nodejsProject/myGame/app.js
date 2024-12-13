@@ -34,6 +34,10 @@ app.get('/login', (req, res) => {
   res.sendFile(__dirname + '/static/HTML/login.html')
 })
 
+app.get('/gameloading', (req, res) => {
+  res.sendFile(__dirname + '/static/HTML/gameloading.html')
+})
+
 app.get('/register', (req, res) => {
   res.sendFile(__dirname + '/static/HTML/Register.html')
 })
