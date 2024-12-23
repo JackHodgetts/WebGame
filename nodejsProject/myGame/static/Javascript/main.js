@@ -26,23 +26,23 @@ renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 camera.position.set(0, 2, 30);
 //camera.rotation.set(30, 0, 0);
 
-const pitchLimit = Math.PI / 2 - 0.1; 
-
 // Stats for FPS display
 stats = new Stats();
 document.body.appendChild(stats.dom);
 
 // Timer countdown
-let startCountDown = setInterval(countdown, 1000);
-function countdown() {
+const startCountDown = setInterval(() => countdown(), 1000);
+
+const countdown = () => {
     timeLeft--;
     document.getElementById("timer").innerText = timeLeft;
     if (timeLeft === 0) {
-        gameOver();}
-}
-function gameOver() {
-    clearInterval(startCountDown);
-}
+        gameOver();
+    }
+
+};
+
+const gameOver = () => clearInterval(startCountDown);
 
 // Lights
 const createLights = () => {
@@ -122,7 +122,7 @@ for (let i = 0; i < 2000; i++) {
 }
 
 // Create Buttons
-function createButton(position) {
+const createButton = (position) => {
     const buttonBaseGeometry = new THREE.CylinderGeometry(0.5, 0.5, 3, 15);
     const buttonBaseMaterial = new THREE.MeshBasicMaterial({ color: 0x808080 });
     const buttonBase = new THREE.Mesh(buttonBaseGeometry, buttonBaseMaterial);
@@ -138,7 +138,7 @@ function createButton(position) {
     scene.add(buttonGroup);
 
     buttons.push(buttonGroup);
-}
+};
 
 // Spawn Buttons
 createButton({ x: 10.5, y: 0, z: 5 });
@@ -147,36 +147,30 @@ createButton({ x: -13, y: 0, z: -15 });
 createButton({ x: -10.5, y: 0, z: 18 });
 
 // Key event listeners
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
+// document.addEventListener("keydown", keyDownHandler, false);
+// document.addEventListener("keyup", keyUpHandler, false);
 
-function keyDownHandler(event) {
+document.addEventListener("keydown", (event) => {
     switch (event.code) {
-        case "KeyW": // Move forward
-            wPressed = true;
-            break;
-        case "KeyS": // Move backward
-            sPressed = true;
-            break;
-        case "KeyA": // Turn left
-            yaw += lookSpeed;
-            break;
-        case "KeyD": // Turn right
-            yaw -= lookSpeed;
-            break;
+        case "KeyW": wPressed = true; 
+        break;
+        case "KeyS": sPressed = true; 
+        break;
+        case "KeyA": yaw += lookSpeed; 
+        break;
+        case "KeyD": yaw -= lookSpeed; 
+        break;
     }
-}
-function keyUpHandler(event) {
-    switch (event.code) {
-        case "KeyW":
-            wPressed = false;
-            break;
-        case "KeyS":
-            sPressed = false;
-            break;
-    }
-}
+});
 
+document.addEventListener("keyup", (event) => {
+    switch (event.code) {
+        case "KeyW": wPressed = false; 
+        break;
+        case "KeyS": sPressed = false; 
+        break;
+    }
+});
 // Movement functions
 const movePlayer = () => {
     const direction = new THREE.Vector3();
@@ -215,44 +209,19 @@ const directions = [
 
 const raycasters = directions.map(dir => new THREE.Raycaster(camera.position, dir.normalize()));
 
-function updateRaycasters() { 
-    raycasters.forEach((raycaster, i) => { 
-        raycaster.set(camera.position, directions[i].normalize()); 
-    }); }
+const updateRaycasters = () => raycasters.forEach((raycaster, i) => raycaster.set(camera.position, directions[i].normalize()));
 
-function checkCollisions() {
+const checkButtonCollision = () => buttons.some(buttonGroup => 
+    new THREE.Box3().setFromObject(buttonGroup.children[1]).containsPoint(camera.position)
+);
+
+const checkCollisions = () => {
     updateRaycasters();
-    for (let raycaster of raycasters) {
-        if (raycaster.intersectObjects(walls).some(collision => collision.distance < 0.5)) {
-            return true;}
-    }
-
-        // Check for button collisions
-        if (checkButtonCollision()) {
-            return true; // Button collision detected
-        }
-}
-
-function checkButtonCollision() {
-    // Iterate through each button in the scene
-    for (let buttonGroup of buttons) {
-        // Get the button base mesh and the actual button mesh
-        const button = buttonGroup.children[1]; // Assuming the button mesh is the second child
-
-        // Create a bounding box around the button
-        const buttonBoundingBox = new THREE.Box3().setFromObject(button);
-
-        // Check if the camera (player) position is inside the bounding box of any button
-        if (buttonBoundingBox.containsPoint(camera.position)) {
-            return true; // Collision detected with the button
-        }
-    }
-
-    return false; // No collision detected
-}
+    return raycasters.some(raycaster => raycaster.intersectObjects(walls).some(collision => collision.distance < 0.5)) || checkButtonCollision();
+};
 
 // Animation loop
-function animate() {
+const animate = () => {
     const delta = clock.getDelta();
     if (mixer) mixer.update(delta);
 
@@ -264,7 +233,7 @@ function animate() {
     stats.update();
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
-}
+};
 animate();
 
 // Resize handler
