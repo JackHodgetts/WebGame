@@ -189,6 +189,10 @@ const movePlayer = () => {
             camera.position.addScaledVector(direction, moveSpeed); // Undo move if collision
         }
     }
+
+    if (checkButtonCollision()) {
+        console.log("Button interaction logic can go here!");
+    }
 };
 
 const CameraRotation = () => {
@@ -211,9 +215,29 @@ const raycasters = directions.map(dir => new THREE.Raycaster(camera.position, di
 
 const updateRaycasters = () => raycasters.forEach((raycaster, i) => raycaster.set(camera.position, directions[i].normalize()));
 
-const checkButtonCollision = () => buttons.some(buttonGroup => 
-    new THREE.Box3().setFromObject(buttonGroup.children[1]).containsPoint(camera.position)
-);
+function checkButtonCollision() {
+    // Iterate through each button in the scene
+    for (let buttonGroup of buttons) {
+        const button = buttonGroup.children[1]; // Assuming the button mesh is the second child
+
+        // Dynamically update bounding box for the button
+        const buttonBoundingBox = new THREE.Box3().setFromObject(button);
+
+        // Create a small bounding box around the camera (player)
+        const cameraBoundingBox = new THREE.Box3().setFromCenterAndSize(
+            camera.position,
+            new THREE.Vector3(0.5, 1.5, 0.5) // Adjust dimensions as needed
+        );
+
+        // Check if the player's bounding box intersects with the button's bounding box
+        if (buttonBoundingBox.intersectsBox(cameraBoundingBox)) {
+            console.log("Button collision detected!");
+            return true; // Collision detected
+        }
+    }
+
+    return false; // No collision detected
+}
 
 const checkCollisions = () => {
     updateRaycasters();
