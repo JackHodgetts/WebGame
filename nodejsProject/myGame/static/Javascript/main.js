@@ -215,10 +215,18 @@ const raycasters = directions.map(dir => new THREE.Raycaster(camera.position, di
 
 const updateRaycasters = () => raycasters.forEach((raycaster, i) => raycaster.set(camera.position, directions[i].normalize()));
 
+const interactText = document.querySelector(".Interact-text");
+
+console.log("Interact Text Element:", interactText);
+
+let isColliding = false;
+
 function checkButtonCollision() {
+    isColliding = false; 
+
     // Iterate through each button in the scene
     for (let buttonGroup of buttons) {
-        const button = buttonGroup.children[1]; // Assuming the button mesh is the second child
+        const button = buttonGroup.children[1];
 
         // Dynamically update bounding box for the button
         const buttonBoundingBox = new THREE.Box3().setFromObject(button);
@@ -231,14 +239,25 @@ function checkButtonCollision() {
 
         // Check if the player's bounding box intersects with the button's bounding box
         if (buttonBoundingBox.intersectsBox(cameraBoundingBox)) {
-            console.log("Button collision detected!");
-            return true; // Collision detected
+            console.log("Collision detected with button:", button); 
+            isColliding = true; 
+            break;
         }
     }
 
-    return false; // No collision detected
+    return isColliding;
 }
 
+function updateInteractText() {
+    // Check if the player is colliding with any button
+    if (isColliding) {
+        interactText.style.display = "block"; // Show interact text
+    } else {
+        interactText.style.display = "none"; // Hide interact text
+    }
+}
+
+//Player Collision
 const checkCollisions = () => {
     updateRaycasters();
     return raycasters.some(raycaster => raycaster.intersectObjects(walls).some(collision => collision.distance < 0.5)) || checkButtonCollision();
@@ -251,6 +270,8 @@ const animate = () => {
 
     movePlayer();
     CameraRotation();
+    updateInteractText();
+    checkButtonCollision();
     group.rotation.y += 0.03;
     group.rotation.x += 0.03;
     group2.rotation.x += 0.06;
