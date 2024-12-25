@@ -1,131 +1,179 @@
-.margin{
-    margin: 0px;
+/* Reset and Global Styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Verdana, sans-serif;
+    background-color: #222;
+    color: white;
+    overflow-x: hidden;
 }
 
-.font{
+.margin {
+    margin: 0;
+}
+
+.font {
     font-size: 20px;
-    font: Verdana;
     color: white;
     list-style: none;
-    
 }
 
-#gameCanvas{
-    width: 1200px;
+/* Game Canvas */
+#gameCanvas {
+    width: 100%;
+    max-width: 1200px;
     height: 600px;
     display: block;
     margin: auto;
+    border: 3px solid #555;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    background-color: #000;
 }
 
-@media (max-width: 480px) {
-    /* Styles for mobile devices */
-    body {
-        background-color: lightgray;
-    }
+/* Overlay Text */
+.overlay-text {
+    position: absolute;
+    top: 30%;
+    left: 20%;
+    color: white;
+    font-size: 18px;
+    text-shadow: 1px 1px 2px #000;
+}
 
-    .navbar ul {
-        font-size: 14px;
-        padding: 5px;
-    }
+.Interact-text {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    text-align: center;
+    z-index: 1000;
+}
 
-    .navbar li {
-        width: 100%;
-        float: none;
-    }
+/* Centered Content */
+.centered {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+}
 
-    .overlay-text {
-        top: 15%;
-        left: 15%;
-        font-size: 12px;
+.description {
+    margin: 20px auto;
+    font-size: 18px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* Navbar */
+.navbar {
+    width: 100%;
+    background-color: hsl(0, 0%, 15%);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.navbar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar li {
+    float: none;
+    margin: 0;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    padding: 15px 20px;
+    display: block;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.navbar a:hover {
+    background-color: hsl(0, 0%, 25%);
+}
+
+/* Boxes */
+.box {
+    background-color: #444;
+    width: 90%;
+    max-width: 600px;
+    padding: 30px;
+    margin: 50px auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.errorbox {
+    background-color: rgba(221, 50, 50, 0.8);
+    color: #fff;
+    width: 90%;
+    max-width: 600px;
+    padding: 40px;
+    margin: 100px auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .font {
+        font-size: 18px;
     }
 
     #gameCanvas {
         width: 100%;
         height: auto;
     }
+
+    .navbar ul {
+        flex-direction: column;
+    }
+
+    .navbar a {
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    .overlay-text {
+        top: 15%;
+        left: 10%;
+        font-size: 14px;
+    }
+
+    .Interact-text {
+        font-size: 14px;
+        padding: 10px 15px;
+    }
 }
 
-.overlay-text{
-    position: absolute;
-    top: 20%;
-    left: 20%;
-    color: white;
-}
+@media (max-width: 480px) {
+    .navbar a {
+        font-size: 14px;
+    }
 
-.Interact-text {
-    display: none; /* Default hidden */
-    position: fixed; /* Adjust as necessary */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-family: Arial, sans-serif;
-    z-index: 1000;
-}
+    .box, .errorbox {
+        padding: 20px;
+    }
 
-.centered{
-    max-width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
-
-    text-align: center;
-}
-
-.description{
-    max-width: fit-content;
-    margin-left: 50px;
-    margin-right: 50px;
-
-    text-align: center;
-
-    font-size: 20px;
-    font: Verdana;
-    color: white;
-    list-style: none;
-}
-.navbar ul{
-    list-style: none;
-    background-color: hsl(0, 0%, 20%);
-    padding: 0px;
-    margin: 0px;
-    font-size: 18px;
-    overflow: hidden;
-}
-.navbar a{
-    color: white;
-    text-decoration: none;
-    padding: 20px;
-    display: block;
-    text-align: center;
-}
-.navbar a:hover{
-    background-color: hsl(0, 0%, 10%);
-}
-.navbar li{
-    float: left;
-}
-
-.navbar li2{
-    float: right;
-}
-
-.box{
-    background-color: rgb(167, 167, 167);
-    width: 600px;
-    /* height: 400px; */
-    padding: 50px;
-    margin: auto;
-    margin-top: auto;
-
-}
-.errorbox{
-    background-color: rgba(221, 221, 221, 0.596);
-    width: 600px;
-    padding: 100px;
-    margin: auto;
-    margin-top: 200px;
-
+    .description {
+        font-size: 16px;
+    }
 }

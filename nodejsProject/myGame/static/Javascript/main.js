@@ -146,35 +146,44 @@ createButton({ x: -7, y: 0, z: 1 });
 createButton({ x: -13, y: 0, z: -15 });
 createButton({ x: -10.5, y: 0, z: 18 });
 
-// Key event listeners
-// document.addEventListener("keydown", keyDownHandler, false);
-// document.addEventListener("keyup", keyUpHandler, false);
 
 document.addEventListener("keydown", (event) => {
     switch (event.code) {
-        case "KeyW": wPressed = true; 
+        case "KeyW": 
+        wPressed = true; 
         break;
-        case "KeyS": sPressed = true; 
+        case "KeyS": 
+        sPressed = true; 
         break;
-        case "KeyA": yaw += lookSpeed; 
+        case "KeyA": 
+        yaw += lookSpeed; 
         break;
-        case "KeyD": yaw -= lookSpeed; 
+        case "KeyD": 
+        yaw -= lookSpeed; 
         break;
     }
 });
 
 document.addEventListener("keyup", (event) => {
     switch (event.code) {
-        case "KeyW": wPressed = false; 
+        case "KeyW": 
+        wPressed = false; 
         break;
-        case "KeyS": sPressed = false; 
+        case "KeyS": 
+        sPressed = false; 
         break;
     }
 });
+
 // Movement functions
 const movePlayer = () => {
     const direction = new THREE.Vector3();
     camera.getWorldDirection(direction);
+
+    if (isButtonColliding && wPressed) {
+        console.log("Player movement halted due to button collision.");
+        return;
+    }
 
     // Forward/backward movement
     if (wPressed) {
@@ -190,9 +199,6 @@ const movePlayer = () => {
         }
     }
 
-    if (checkButtonCollision()) {
-        console.log("Button interaction logic can go here!");
-    }
 };
 
 const CameraRotation = () => {
@@ -219,14 +225,14 @@ const interactText = document.querySelector(".Interact-text");
 
 console.log("Interact Text Element:", interactText);
 
-let isColliding = false;
+let isButtonColliding = false;
 
 function checkButtonCollision() {
-    isColliding = false; 
+    isButtonColliding = false; 
 
     // Iterate through each button in the scene
     for (let buttonGroup of buttons) {
-        const button = buttonGroup.children[1];
+        const button = buttonGroup.children[1]; 
 
         // Dynamically update bounding box for the button
         const buttonBoundingBox = new THREE.Box3().setFromObject(button);
@@ -234,34 +240,31 @@ function checkButtonCollision() {
         // Create a small bounding box around the camera (player)
         const cameraBoundingBox = new THREE.Box3().setFromCenterAndSize(
             camera.position,
-            new THREE.Vector3(0.5, 1.5, 0.5) // Adjust dimensions as needed
+            new THREE.Vector3(0.5, 1.5, 0.5) 
         );
 
         // Check if the player's bounding box intersects with the button's bounding box
         if (buttonBoundingBox.intersectsBox(cameraBoundingBox)) {
             console.log("Collision detected with button:", button); 
-            isColliding = true; 
-            break;
+            isButtonColliding = true; 
+
+            interactText.style.display = "block";
+            return; 
         }
     }
 
-    return isColliding;
-}
-
-function updateInteractText() {
-    // Check if the player is colliding with any button
-    if (isColliding) {
-        interactText.style.display = "block"; // Show interact text
-    } else {
-        interactText.style.display = "none"; // Hide interact text
+    if (!isButtonColliding) {
+        interactText.style.display = "none";
     }
 }
+
 
 //Player Collision
 const checkCollisions = () => {
     updateRaycasters();
     return raycasters.some(raycaster => raycaster.intersectObjects(walls).some(collision => collision.distance < 0.5)) || checkButtonCollision();
 };
+
 
 // Animation loop
 const animate = () => {
@@ -270,8 +273,7 @@ const animate = () => {
 
     movePlayer();
     CameraRotation();
-    updateInteractText();
-    checkButtonCollision();
+    checkButtonCollision(); 
     group.rotation.y += 0.03;
     group.rotation.x += 0.03;
     group2.rotation.x += 0.06;
