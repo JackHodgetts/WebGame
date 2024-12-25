@@ -15,7 +15,9 @@ const buttons = []; // Making na array for the buttons around the Maze
 
 let lookSpeed = 0.05;
 let moveSpeed = 0.15;
-let yaw = 0; // Left/Right rotation
+let yaw = 0;
+
+//let gameFinish = false;
 
 // Scene, camera, and renderer setup
 const scene = new THREE.Scene();
@@ -23,7 +25,7 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const canvas = document.querySelector("#gameCanvas");
 const renderer = new THREE.WebGLRenderer({ canvas: canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-camera.position.set(0, 2, 30);
+camera.position.set(2, 2, 30);
 //camera.rotation.set(30, 0, 0);
 
 // Stats for FPS display
@@ -38,11 +40,17 @@ const countdown = () => {
     document.getElementById("timer").innerText = timeLeft;
     if (timeLeft === 0) {
         gameOver();
+        console.log("Time is up")
     }
 
 };
 
-const gameOver = () => clearInterval(startCountDown);
+//Gameover
+const gameOver = () => {
+    //gameFinish = true;
+
+    clearInterval(startCountDown);
+}
 
 // Lights
 const createLights = () => {
@@ -182,7 +190,7 @@ const movePlayer = () => {
 
     if (isButtonColliding && wPressed) {
         console.log("Player movement halted due to button collision.");
-        return;
+        return; 
     }
 
     // Forward/backward movement
