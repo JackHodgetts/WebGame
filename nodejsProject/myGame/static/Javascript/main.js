@@ -16,6 +16,7 @@ const buttons = []; // Making na array for the buttons around the Maze
 let lookSpeed = 0.05;
 let moveSpeed = 0.15;
 let yaw = 0;
+let targetYaw = 0;
 let initialYaw = yaw; //For restarting the game
 
 let gameFinish = false;
@@ -45,7 +46,14 @@ const countdown = () => {
     }
 
     timeLeft--; // Decrement time
-    document.getElementById("timer").innerText = timeLeft;
+
+    const minutes = Math.floor(timeLeft / 60); // Calculate minutes
+    const seconds = timeLeft % 60; // Calculate seconds
+
+    // Format seconds to always be two digits
+    const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+
+    document.getElementById("timer").innerText = `${minutes}:${formattedSeconds}`;
 };
 
 //Gameover
@@ -61,12 +69,15 @@ const gameOver = () => {
 //     console.log("RestartGame");
 //     camera.position.set(2, 2, 30);
 //     gameFinish = false;
+//     buttonData.pressed = false;
+//     doorOpen = false;  
+//     buttonTop.position.y; 
 
 //     yaw = initialYaw;
 
 //     timeLeft = 10;
 
-//     document.getElementById("timer").innerText = timeLeft;
+//     document.getElementById("timer").innerText = `${minutes}:${formattedSeconds}`;
 
 //     clearInterval(startCountDown);
 
@@ -104,7 +115,7 @@ loader.load('../models/Maze_Door.glb', (gltf) => {
     const mesh = gltf.scene;
     mesh.scale.set(0.5, 0.5, 0.5);
     scene.add(mesh);
-
+    
     mazeDoor = mesh;
 
     const doorMixer = new THREE.AnimationMixer(mesh);
@@ -196,10 +207,10 @@ document.addEventListener("keydown", (event) => {
         sPressed = true; 
         break;
         case "KeyA": 
-        yaw += lookSpeed; 
+        targetYaw  += lookSpeed; 
         break;
         case "KeyD": 
-        yaw -= lookSpeed; 
+        targetYaw  -= lookSpeed; 
         break;
     }
 });
@@ -242,8 +253,9 @@ const movePlayer = () => {
 };
 
 const CameraRotation = () => {
-    if(gameFinish == false){
-        camera.rotation.y = yaw;
+    if (!gameFinish) {
+        yaw = THREE.MathUtils.lerp(yaw, targetYaw, 0.1); // Smoothly interpolate the yaw
+        camera.rotation.y = yaw; // Apply the interpolated yaw to the camera
     }
 };
 
@@ -332,7 +344,7 @@ const openMazeDoor = () => {
         console.log("Opening the maze door...");
         
         // Example of door rotation (adjust axis and angle as needed)
-        mazeDoor.position.x -= 5;
+        mazeDoor.position.x -= 3.3;
 
         // Set the door as open
         doorOpen = true;

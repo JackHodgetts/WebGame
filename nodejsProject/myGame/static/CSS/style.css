@@ -56,6 +56,10 @@ body, html {
     z-index: 1000;
 }
 
+.restartButton{
+    /* Restart design; */
+}
+
 /* Centered Content */
 .centered {
     max-width: 800px;
