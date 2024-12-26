@@ -9,7 +9,7 @@ const animationActions = [];
 const clock = new THREE.Clock();
 let wPressed = false;
 let sPressed = false;
-let timeLeft = 60;
+let timeLeft = 120;
 const walls = []; // Making an array for the walls of Maze
 const buttons = []; // Making na array for the buttons around the Maze
 
@@ -17,7 +17,7 @@ let lookSpeed = 0.05;
 let moveSpeed = 0.15;
 let yaw = 0;
 
-//let gameFinish = false;
+let gameFinish = false;
 
 // Scene, camera, and renderer setup
 const scene = new THREE.Scene();
@@ -26,7 +26,6 @@ const canvas = document.querySelector("#gameCanvas");
 const renderer = new THREE.WebGLRenderer({ canvas: canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 camera.position.set(2, 2, 30);
-//camera.rotation.set(30, 0, 0);
 
 // Stats for FPS display
 stats = new Stats();
@@ -47,7 +46,7 @@ const countdown = () => {
 
 //Gameover
 const gameOver = () => {
-    //gameFinish = true;
+    gameFinish = true;
 
     clearInterval(startCountDown);
 }
@@ -194,13 +193,13 @@ const movePlayer = () => {
     }
 
     // Forward/backward movement
-    if (wPressed) {
+    if (wPressed && gameFinish == false) {
         camera.position.addScaledVector(direction, moveSpeed);
         if (checkCollisions()) {
             camera.position.addScaledVector(direction, -moveSpeed); // Undo move if collision
         }
     }
-    if (sPressed) {
+    if (sPressed  && gameFinish == false) {
         camera.position.addScaledVector(direction, -moveSpeed);
         if (checkCollisions()) {
             camera.position.addScaledVector(direction, moveSpeed); // Undo move if collision
@@ -210,7 +209,9 @@ const movePlayer = () => {
 };
 
 const CameraRotation = () => {
-    camera.rotation.y = yaw; // Left/right rotation
+    if(gameFinish == false){
+        camera.rotation.y = yaw;
+    }
 };
 
 // Raycaster setup for collision detection
@@ -253,7 +254,6 @@ function checkButtonCollision() {
 
         // Check if the player's bounding box intersects with the button's bounding box
         if (buttonBoundingBox.intersectsBox(cameraBoundingBox)) {
-            console.log("Collision detected with button:", button); 
             isButtonColliding = true; 
 
             interactText.style.display = "block";
