@@ -9,13 +9,14 @@ const animationActions = [];
 const clock = new THREE.Clock();
 let wPressed = false;
 let sPressed = false;
-let timeLeft = 120;
+let timeLeft = 10;
 const walls = []; // Making an array for the walls of Maze
 const buttons = []; // Making na array for the buttons around the Maze
 
 let lookSpeed = 0.05;
 let moveSpeed = 0.15;
 let yaw = 0;
+let initialYaw = yaw; //For restarting the game
 
 let gameFinish = false;
 
@@ -35,13 +36,14 @@ document.body.appendChild(stats.dom);
 const startCountDown = setInterval(() => countdown(), 1000);
 
 const countdown = () => {
-    timeLeft--;
-    document.getElementById("timer").innerText = timeLeft;
-    if (timeLeft === 0) {
+    if (timeLeft <= 0) {
         gameOver();
-        console.log("Time is up")
+        console.log("Time is up");
+        return; // Stop the countdown if the time has already run out
     }
 
+    timeLeft--; // Decrement time
+    document.getElementById("timer").innerText = timeLeft;
 };
 
 //Gameover
@@ -50,6 +52,24 @@ const gameOver = () => {
 
     clearInterval(startCountDown);
 }
+
+//Restart Game
+const restartButton = document.getElementById("restart");
+restartButton.addEventListener("click", () =>{
+    console.log("RestartGame");
+    camera.position.set(2, 2, 30);
+    gameFinish = false;
+
+    yaw = initialYaw;
+
+    timeLeft = 10;
+
+    document.getElementById("timer").innerText = timeLeft;
+
+    clearInterval(startCountDown);
+
+    startCountDown = setInterval(() => countdown(), 1000);
+});
 
 // Lights
 const createLights = () => {
