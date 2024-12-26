@@ -9,7 +9,7 @@ const animationActions = [];
 const clock = new THREE.Clock();
 let wPressed = false;
 let sPressed = false;
-let timeLeft = 10;
+let timeLeft = 180;
 const walls = []; // Making an array for the walls of Maze
 const buttons = []; // Making na array for the buttons around the Maze
 
@@ -19,6 +19,8 @@ let yaw = 0;
 let initialYaw = yaw; //For restarting the game
 
 let gameFinish = false;
+
+let mazeDoor = null;
 
 // Scene, camera, and renderer setup
 const scene = new THREE.Scene();
@@ -54,22 +56,22 @@ const gameOver = () => {
 }
 
 //Restart Game
-const restartButton = document.getElementById("restart");
-restartButton.addEventListener("click", () =>{
-    console.log("RestartGame");
-    camera.position.set(2, 2, 30);
-    gameFinish = false;
+// const restartButton = document.getElementById("restart");
+// restartButton.addEventListener("click", () =>{
+//     console.log("RestartGame");
+//     camera.position.set(2, 2, 30);
+//     gameFinish = false;
 
-    yaw = initialYaw;
+//     yaw = initialYaw;
 
-    timeLeft = 10;
+//     timeLeft = 10;
 
-    document.getElementById("timer").innerText = timeLeft;
+//     document.getElementById("timer").innerText = timeLeft;
 
-    clearInterval(startCountDown);
+//     clearInterval(startCountDown);
 
-    startCountDown = setInterval(() => countdown(), 1000);
-});
+//     startCountDown = setInterval(() => countdown(), 1000);
+// });
 
 // Lights
 const createLights = () => {
@@ -98,10 +100,12 @@ loader.load('../models/Maze_One.glb', (gltf) => {
 });
 
 // Maze door loading
-loader.load('../models/Door.glb', (gltf) => {
+loader.load('../models/Maze_Door.glb', (gltf) => {
     const mesh = gltf.scene;
     mesh.scale.set(0.5, 0.5, 0.5);
     scene.add(mesh);
+
+    mazeDoor = mesh;
 
     const doorMixer = new THREE.AnimationMixer(mesh);
     gltf.animations.forEach((clip) => {
@@ -150,21 +154,30 @@ for (let i = 0; i < 2000; i++) {
 
 // Create Buttons
 const createButton = (position) => {
+    // Button base
     const buttonBaseGeometry = new THREE.CylinderGeometry(0.5, 0.5, 3, 15);
     const buttonBaseMaterial = new THREE.MeshBasicMaterial({ color: 0x808080 });
     const buttonBase = new THREE.Mesh(buttonBaseGeometry, buttonBaseMaterial);
     buttonBase.position.set(position.x, position.y, position.z);
 
+    // Button top
     const buttonGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.5, 15);
     const buttonMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    const button = new THREE.Mesh(buttonGeometry, buttonMaterial);
-    button.position.set(position.x, position.y + 1.5, position.z);
+    const buttonTop = new THREE.Mesh(buttonGeometry, buttonMaterial);
+    buttonTop.position.set(position.x, position.y + 1.5, position.z);
 
-    const buttonGroup = new THREE.Group();
-    buttonGroup.add(buttonBase, button);
-    scene.add(buttonGroup);
+    // Store button components in an object
+    const buttonData = {
+        base: buttonBase,
+        top: buttonTop,
+        pressed: false,
+    };
 
-    buttons.push(buttonGroup);
+    // Add to scene
+    scene.add(buttonBase, buttonTop);
+
+    // Store in buttons array
+    buttons.push(buttonData);
 };
 
 // Spawn Buttons
@@ -260,11 +273,11 @@ function checkButtonCollision() {
     isButtonColliding = false; 
 
     // Iterate through each button in the scene
-    for (let buttonGroup of buttons) {
-        const button = buttonGroup.children[1]; 
+    for (let buttonData  of buttons) {
+        const buttonTop = buttonData.top;
 
         // Dynamically update bounding box for the button
-        const buttonBoundingBox = new THREE.Box3().setFromObject(button);
+        const buttonBoundingBox = new THREE.Box3().setFromObject(buttonTop);
 
         // Create a small bounding box around the camera (player)
         const cameraBoundingBox = new THREE.Box3().setFromCenterAndSize(
@@ -277,6 +290,20 @@ function checkButtonCollision() {
             isButtonColliding = true; 
 
             interactText.style.display = "block";
+
+            document.addEventListener("keydown", (event) => {
+                if (event.code === "KeyE" && !buttonData.pressed) {
+                    // Move button down slightly
+                    buttonTop.position.y -= 0.1;
+                    
+                    //Sets the instant of the button from false to true
+                    buttonData.pressed = true;
+
+                    // Play sound cue (optional, add your audio logic here)
+                    console.log("Button pressed!");
+                }
+            });
+
             return; 
         }
     }
@@ -293,6 +320,30 @@ const checkCollisions = () => {
     return raycasters.some(raycaster => raycaster.intersectObjects(walls).some(collision => collision.distance < 0.5)) || checkButtonCollision();
 };
 
+//A function for when all the buttons have be pressed
+const areAllButtonsPressed = () => {
+    return buttons.every((buttonData) => buttonData.pressed);
+};
+
+let doorOpen = false;
+
+const openMazeDoor = () => {
+    if (mazeDoor && !doorOpen) {
+        console.log("Opening the maze door...");
+        
+        // Example of door rotation (adjust axis and angle as needed)
+        mazeDoor.position.x -= 5;
+
+        // Set the door as open
+        doorOpen = true;
+    }
+};
+
+const updateGameLogic = () => {
+    if (areAllButtonsPressed() && !doorOpen) {
+        openMazeDoor();
+    }
+};
 
 // Animation loop
 const animate = () => {
@@ -301,7 +352,8 @@ const animate = () => {
 
     movePlayer();
     CameraRotation();
-    checkButtonCollision(); 
+    checkButtonCollision();
+    updateGameLogic(); 
     group.rotation.y += 0.03;
     group.rotation.x += 0.03;
     group2.rotation.x += 0.06;
