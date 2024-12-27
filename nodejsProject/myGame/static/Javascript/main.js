@@ -42,13 +42,13 @@ const countdown = () => {
     if (timeLeft <= 0) {
         gameOver();
         console.log("Time is up");
-        return; // Stop the countdown if the time has already run out
+        return; 
     }
 
-    timeLeft--; // Decrement time
+    timeLeft--; 
 
-    const minutes = Math.floor(timeLeft / 60); // Calculate minutes
-    const seconds = timeLeft % 60; // Calculate seconds
+    const minutes = Math.floor(timeLeft / 60); 
+    const seconds = timeLeft % 60; 
 
     // Format seconds to always be two digits
     const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
@@ -59,30 +59,46 @@ const countdown = () => {
 //Gameover
 const gameOver = () => {
     gameFinish = true;
+    RestartButtonText.style.display = "block";
+
+    canvas.style.opacity = "0.3";
 
     clearInterval(startCountDown);
 }
 
+const RestartButtonText = document.querySelector(".restartButton");
+
+console.log("RestartButton Text Element:", RestartButtonText);
+
 //Restart Game
-// const restartButton = document.getElementById("restart");
-// restartButton.addEventListener("click", () =>{
-//     console.log("RestartGame");
-//     camera.position.set(2, 2, 30);
-//     gameFinish = false;
-//     buttonData.pressed = false;
-//     doorOpen = false;  
-//     buttonTop.position.y; 
+const restartButton = document.getElementById("restart");
+restartButton.addEventListener("click", () =>{
+    console.log("RestartGame");
+    camera.position.set(2, 2, 30);
+    camera.rotation.set(0, 90, 0);
+    yaw = initialYaw;
 
-//     yaw = initialYaw;
+    buttons.forEach(buttonData => {
+        buttonData.pressed = false;
+        buttonData.top.position.y = 1.5;
+    });
 
-//     timeLeft = 10;
+    gameFinish = false;
+    timeLeft = 180; 
+    doorOpen = false; 
 
-//     document.getElementById("timer").innerText = `${minutes}:${formattedSeconds}`;
+    const minutes = Math.floor(timeLeft / 60); 
+    const seconds = timeLeft % 60; 
+    const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+    document.getElementById("timer").innerText = `${minutes}:${formattedSeconds}`;
 
-//     clearInterval(startCountDown);
+    //clearInterval(startCountDown);
 
-//     startCountDown = setInterval(() => countdown(), 1000);
-// });
+    RestartButtonText.style.display = "none";
+    canvas.style.opacity = 1;
+
+    startCountDown = setInterval(() => countdown(), 1000);
+});
 
 // Lights
 const createLights = () => {
