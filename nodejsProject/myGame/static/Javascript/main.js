@@ -12,6 +12,10 @@ let sPressed = false;
 let timeLeft = 180;
 const walls = []; // Making an array for the walls of Maze
 const buttons = []; // Making na array for the buttons around the Maze
+let canMove = false; // Flag to control player movement
+let canRotate = false;
+let gameStart = false;
+let isLoaderActive = true; // Track if the loader is active
 
 let lookSpeed = 0.05;
 let moveSpeed = 0.15;
@@ -39,6 +43,10 @@ document.body.appendChild(stats.dom);
 const startCountDown = setInterval(() => countdown(), 1000);
 
 const countdown = () => {
+    if(!gameStart){
+        return;
+    }
+
     if (timeLeft <= 0) {
         gameOver();
         console.log("Time is up");
@@ -102,12 +110,21 @@ restartButton.addEventListener("click", () =>{
 
 // Loading Game
 let loading = document.getElementById("loading");   
+canvas.style.opacity = "0.3";
+canvas.style.pointerEvents = "none";
 
 setTimeout(() => {
+    loading.style.transition = "opacity 0.5s ease";
     loading.style.opacity = 0; 
     setTimeout(() => {
         loading.style.display = 'none'; 
+        canvas.style.transition = "opacity 0.5s ease";
         canvas.style.opacity = 1; 
+        isLoaderActive = false;
+        canMove = true;
+        canRotate = true;
+        gameStart = true;
+        canvas.style.pointerEvents = "auto";
     }, 500); 
 }, 3000); 
 
@@ -165,31 +182,6 @@ const createskybox = () => {
     });
 };
 createskybox();
-
-// Basic objects and groups
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0xedf50a });
-const cube = new THREE.Mesh(geometry, material);
-cube.position.set(0, 2, 0);
-
-const material2 = new THREE.MeshBasicMaterial({ color: 0xf2304a });
-const cube2 = new THREE.Mesh(geometry, material2);
-cube2.position.set(2, 2, 0);
-
-let group = new THREE.Group();
-group.add(cube, cube2);
-let group2 = new THREE.Group();
-group2.add(cube, group);
-scene.add(group2);
-
-// Random boxes in scene
-for (let i = 0; i < 2000; i++) {
-    const object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: Math.random() * 0xffffff }));
-    object.position.set(Math.random() * 800 - 400, Math.random() * 800 - 400, Math.random() * 800 - 400);
-    object.rotation.set(Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI);
-    object.scale.set(Math.random() + 5, Math.random() + 5, Math.random() + 5);
-    scene.add(object);
-}
 
 // Create Buttons
 const createButton = (position) => {
@@ -256,6 +248,10 @@ document.addEventListener("keyup", (event) => {
 
 // Movement functions
 const movePlayer = () => {
+    if(!canMove || gameFinish){
+        return;
+    }
+
     const direction = new THREE.Vector3();
     camera.getWorldDirection(direction);
 
@@ -265,13 +261,13 @@ const movePlayer = () => {
     }
 
     // Forward/backward movement
-    if (wPressed && gameFinish == false) {
+    if (wPressed) {
         camera.position.addScaledVector(direction, moveSpeed);
         if (checkCollisions()) {
             camera.position.addScaledVector(direction, -moveSpeed); // Undo move if collision
         }
     }
-    if (sPressed  && gameFinish == false) {
+    if (sPressed) {
         camera.position.addScaledVector(direction, -moveSpeed);
         if (checkCollisions()) {
             camera.position.addScaledVector(direction, moveSpeed); // Undo move if collision
@@ -281,6 +277,10 @@ const movePlayer = () => {
 };
 
 const CameraRotation = () => {
+    if(!canRotate){
+        return;
+    }
+
     if (!gameFinish) {
         yaw = THREE.MathUtils.lerp(yaw, targetYaw, 0.1); // Smoothly interpolate the yaw
         camera.rotation.y = yaw; // Apply the interpolated yaw to the camera
@@ -394,9 +394,6 @@ const animate = () => {
     CameraRotation();
     checkButtonCollision();
     updateGameLogic(); 
-    group.rotation.y += 0.03;
-    group.rotation.x += 0.03;
-    group2.rotation.x += 0.06;
     stats.update();
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
