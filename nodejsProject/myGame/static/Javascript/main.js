@@ -75,7 +75,7 @@ const restartButton = document.getElementById("restart");
 restartButton.addEventListener("click", () =>{
     console.log("RestartGame");
     camera.position.set(2, 2, 30);
-    camera.rotation.set(0, 90, 0);
+    camera.rotation.set(0, 0, 0);
     yaw = initialYaw;
 
     buttons.forEach(buttonData => {
@@ -99,6 +99,18 @@ restartButton.addEventListener("click", () =>{
 
     startCountDown = setInterval(() => countdown(), 1000);
 });
+
+// Loading Game
+let loading = document.getElementById("loading");   
+
+setTimeout(() => {
+    loading.style.opacity = 0; 
+    setTimeout(() => {
+        loading.style.display = 'none'; 
+        canvas.style.opacity = 1; 
+    }, 500); 
+}, 3000); 
+
 
 // Lights
 const createLights = () => {

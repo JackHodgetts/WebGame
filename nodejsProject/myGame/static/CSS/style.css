@@ -21,8 +21,8 @@ body, html {
 /* Game Canvas */
 #gameCanvas {
     width: 100%;
-    max-width: 1500px;
-    height: 700px;
+    max-width: 1600px;
+    height: 800px;
     display: block;
     margin: auto;
     border: 3px solid #444;
@@ -41,6 +41,7 @@ body, html {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
+/* Interact Text */
 .Interact-text {
     display: none;
     position: absolute;
@@ -58,6 +59,7 @@ body, html {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
 }
 
+/* Restart */
 .restartButton {
     display: none;
     position: absolute;
@@ -87,6 +89,28 @@ body, html {
 .restartButton:active {
     background-color: #666;
     transform: translate(-50%, -50%) scale(0.95);
+}
+
+/* Loader */
+.loader {
+    position: absolute;
+    top: 60%; 
+    left: 49%;
+    border: 10px solid #f3f3f3; /* Light grey */
+    border-top: 10px solid #3498db; /* Blue */
+    border-radius: 60%;
+    width: 20px;
+    height: 20px;
+    animation: spin 2s linear infinite;
+}
+  
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#loading {
+    transition: opacity 0.5s ease-out;
 }
 
 /* Centered Content */
