@@ -2,6 +2,12 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+const bodyParser = require('body-parser');
+
+app.use(express.urlencoded({
+  extended:false
+}));
+
 var mysql = require('mysql');
 
 var con = mysql.createConnection({
@@ -33,6 +39,30 @@ app.get('/game', (req, res) => {
 app.get('/login', (req, res) => {
   res.sendFile(__dirname + '/static/HTML/login.html')
 })
+
+//Login Form creations
+app.post("/loginform", (req, res) => {
+  if(req != null){
+    console.log("username:" + req.body.username);
+    console.log("pwd:" + req.body.pwd);
+  
+
+    const username = req.body.username;
+    const password = req.body.pwd;
+
+   if ((username == "User1") && (password == "Word")){
+     res.redirect('/game');
+   }
+    else{
+      res.sendFile(__dirname + '/static/HTML/404.html')
+   }
+
+  }
+  else{
+    res.sendFile(__dirname + '/static/HTML/404.html')
+  }
+
+});
 
 app.get('/gameloading', (req, res) => {
   res.sendFile(__dirname + '/static/HTML/gameloading.html')
