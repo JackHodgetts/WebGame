@@ -34,16 +34,18 @@
             <h2>This is the register page for the web puzzle game Maze Ascendancy!!!</h2>
         </main>
 
-        <div class="box">
-            <form>
+        <div class="box" >
+            <form action = "/registerform" method="POST">
                 <label for="username" style="color: #ffffff;">Username:</label><br>
                 <input type="text" id="username" name="username"><br>
                 <label for="pwd" style="color: #ffffff;">Password:</label><br>
                 <input type="password" id="pwd" name="pwd"><br>
                 <label for="pwd" style="color: #ffffff;">Confirm Password:</label><br>
-                <input type="password" id="pwd" name="pwd"><br>
+                <input type="password" id="Comfirmpwd" name="Comfirmpwd"><br>
                 <input type="submit" value="Register"><br>
             </form>
+
+            <a href="/login" style="color: #ffffff;">Already have an account? Press here to Login in.</a>
         </div>
     
     

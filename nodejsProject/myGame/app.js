@@ -42,26 +42,67 @@ app.get('/login', (req, res) => {
 
 //Login Form creations
 app.post("/loginform", (req, res) => {
-  if(req != null){
+  if (req != null) {
     console.log("username:" + req.body.username);
     console.log("pwd:" + req.body.pwd);
-  
 
     const username = req.body.username;
     const password = req.body.pwd;
 
-   if ((username == "User1") && (password == "Word")){
-     res.redirect('/game');
-   }
-    else{
-      res.sendFile(__dirname + '/static/HTML/404.html')
-   }
+    // Query the database for the user
+    const query = `SELECT * FROM user WHERE username = ? AND password = ?`;
+    con.query(query, [username, password], (err, results) => {
+      if (err) {
+        console.error("Error querying user:", err);
+        return res.sendFile(__dirname + '/static/HTML/404.html');
+      }
 
+      if (results.length > 0) {
+        // Successful login
+        console.log("User logged in successfully:", username);
+        res.redirect('/game');
+      } else {
+        // Invalid credentials
+        console.log("Invalid username or password.");
+        res.sendFile(__dirname + '/static/HTML/404.html');
+      }
+    });
+  } else {
+    res.sendFile(__dirname + '/static/HTML/404.html');
   }
-  else{
-    res.sendFile(__dirname + '/static/HTML/404.html')
-  }
+});
 
+//Register Forms creations
+app.post("/registerform", (req, res) => {
+  if (req != null) {
+    console.log("username:" + req.body.username);
+    console.log("pwd:" + req.body.pwd);
+    console.log("Comfirmpwd:" + req.body.Comfirmpwd);
+
+    const username = req.body.username;
+    const password = req.body.pwd;
+    const confirmPassword = req.body.Comfirmpwd;
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      console.log("Passwords do not match.");
+      return res.sendFile(__dirname + '/static/HTML/404.html');
+    }
+
+    // Insert the new user into the database
+    const query = `INSERT INTO user (username, password) VALUES (?, ?)`;
+    con.query(query, [username, password], (err, result) => {
+      if (err) {
+        console.error("Error inserting user:", err);
+        return res.sendFile(__dirname + '/static/HTML/404.html');
+      }
+
+      console.log("User registered successfully:", username);
+      res.redirect('/login');
+    });
+  } else {
+    res.sendFile(__dirname + '/static/HTML/404.html');
+  }
 });
 
 app.get('/gameloading', (req, res) => {
