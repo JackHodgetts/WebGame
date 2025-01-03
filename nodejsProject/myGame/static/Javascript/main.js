@@ -35,9 +35,15 @@ const renderer = new THREE.WebGLRenderer({ canvas: canvas });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 camera.position.set(2, 2, 30);
 
+const listener = new THREE.AudioListener();
+camera.add(listener);
+
 // Stats for FPS display
 stats = new Stats();
 document.body.appendChild(stats.dom);
+
+// AudioLoader
+const audioLoader = new THREE.AudioLoader();
 
 // Timer countdown
 const startCountDown = setInterval(() => countdown(), 1000);
@@ -341,6 +347,13 @@ function checkButtonCollision() {
 
                     // Play sound cue (optional, add your audio logic here)
                     console.log("Button pressed!");
+                    const buttonSound = new THREE.Audio(listener);
+                    audioLoader.load('../images/ding-101492.mp3', function (buffer) {
+                        buttonSound.setBuffer(buffer);
+                        buttonSound.setLoop(false);
+                        buttonSound.setVolume(1.0);
+                        buttonSound.play();
+                    });
                 }
             });
 
