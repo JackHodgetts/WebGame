@@ -15,7 +15,7 @@ const buttons = []; // Making na array for the buttons around the Maze
 let canMove = false; // Flag to control player movement
 let canRotate = false;
 let gameStart = false;
-let isLoaderActive = true; // Track if the loader is active
+let isLoaderActive = true;
 
 let lookSpeed = 0.05;
 let moveSpeed = 0.15;
@@ -223,6 +223,12 @@ createButton({ x: -7, y: 0, z: 1 });
 createButton({ x: -13, y: 0, z: -15 });
 createButton({ x: -10.5, y: 0, z: 18 });
 
+// Level Transition
+const cudeEnd = new THREE.BoxGeometry( 7, 7, 3);
+const materialend = new THREE.MeshBasicMaterial({color: 0xfaf202});
+const levelEnd = new THREE.Mesh(cudeEnd, materialend);
+scene.add(levelEnd);
+levelEnd.position.set(-2, 3, -32.5)
 
 document.addEventListener("keydown", (event) => {
     switch (event.code) {
