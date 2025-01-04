@@ -252,14 +252,24 @@ const LevelChangeCollision = () =>{
     if (LevelEndBoundingBox.intersectsBox(cameraBoundingBox)){
         isLevelChangeColliding = true;
         timerPaused = true;
+        gameFinish = true;
         LevelChange.style.display = "block";
 
         document.addEventListener("click", () => {
-            //LoadLevel2();
-            console.log("Level Changing Please Wait.")
-        })
+            console.log("RestartGame");
+            camera.position.set(2, 2, 30);
+            camera.rotation.set(0, 0, 0);
+            yaw = initialYaw;
+            gameFinish = false;
+            LevelChange.style.display = "none";
+        
+            buttons.forEach(buttonData => {
+                buttonData.pressed = false;
+                buttonData.top.position.y = 1.5;
+            });
+        });
 
-        canvas.style.opacity = "0.3";
+        // canvas.style.opacity = "0.3";
 
         return;
     }
@@ -309,7 +319,7 @@ const movePlayer = () => {
     const direction = new THREE.Vector3();
     camera.getWorldDirection(direction);
 
-    if (isButtonColliding && wPressed || isLevelChangeColliding && wPressed) {
+    if (isButtonColliding && wPressed) {
         console.log("Player movement halted due to button collision.");
         return; 
     }
@@ -442,6 +452,7 @@ const updateGameLogic = () => {
         openMazeDoor();
     }
 };
+
 
 // Animation loop
 const animate = () => {
