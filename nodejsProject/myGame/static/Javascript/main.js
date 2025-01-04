@@ -10,9 +10,10 @@ const clock = new THREE.Clock();
 let wPressed = false;
 let sPressed = false;
 let timeLeft = 300;
+let timerPaused = false;
 const walls = []; // Making an array for the walls of Maze
 const buttons = []; // Making na array for the buttons around the Maze
-let canMove = false; // Flag to control player movement
+let canMove = false; 
 let canRotate = false;
 let gameStart = false;
 let isLoaderActive = true;
@@ -49,7 +50,7 @@ const audioLoader = new THREE.AudioLoader();
 const startCountDown = setInterval(() => countdown(), 1000);
 
 const countdown = () => {
-    if(!gameStart){
+    if(!gameStart || timerPaused){
         return;
     }
 
@@ -98,7 +99,7 @@ restartButton.addEventListener("click", () =>{
     });
 
     gameFinish = false;
-    timeLeft = 180; 
+    timeLeft = 300; 
     doorOpen = false; 
 
     const minutes = Math.floor(timeLeft / 60); 
@@ -248,8 +249,9 @@ const LevelChangeCollision = () =>{
         new THREE.Vector3(0.5, 1.5, 0.5) 
     );
 
-    if (LevelEndBoundingBox.intersectsBox(cameraBoundingBox) && areAllButtonsPressed()){
+    if (LevelEndBoundingBox.intersectsBox(cameraBoundingBox)){
         isLevelChangeColliding = true;
+        timerPaused = true;
         LevelChange.style.display = "block";
 
         document.addEventListener("click", () => {
@@ -257,11 +259,15 @@ const LevelChangeCollision = () =>{
             console.log("Level Changing Please Wait.")
         })
 
+        canvas.style.opacity = "0.3";
+
         return;
     }
 
     if (!isLevelChangeColliding) {
         LevelChange.style.display = "none";
+        canvas.style.opacity = "1";
+        timerPaused = false;
     }
 
 }
