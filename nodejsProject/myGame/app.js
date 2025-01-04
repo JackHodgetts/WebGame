@@ -40,6 +40,30 @@ app.get('/login', (req, res) => {
   res.sendFile(__dirname + '/static/HTML/login.html')
 })
 
+app.use(express.json());
+
+app.post('/score', (req, res) => {
+  console.log("Received request body:", req.body);  // Debugging line
+
+  const { score } = req.body;  // Extract score from request
+
+  if (typeof score !== "number" || score < 0) {
+      return res.status(400).json({ error: "Invalid score data" });
+  }
+
+  const username = "User3";  // Replace with actual logged-in user
+
+  const query = `UPDATE user SET score = ? WHERE username = ?`;
+  con.query(query, [score, username], (err, result) => {
+      if (err) {
+          console.error("Error updating score:", err);
+          return res.status(500).json({ error: "Database error" });
+      }
+
+      console.log(`Score updated successfully: ${score} for user ${username}`);
+      res.json({ message: "Score updated successfully." });
+  });
+})
 //Login Form creations
 app.post("/loginform", (req, res) => {
   if (req != null) {

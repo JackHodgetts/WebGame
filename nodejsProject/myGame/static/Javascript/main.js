@@ -231,6 +231,24 @@ const levelEnd = new THREE.Mesh(cudeEnd, materialend);
 scene.add(levelEnd);
 levelEnd.position.set(-2, 3, -32.5)
 
+
+function sendScore(score) {
+    fetch('/score', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ score: score })  // Send JSON data correctly
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Score update response:", data);
+    })
+    .catch(error => {
+        console.error("Error sending score:", error);
+    });
+}
+
 const LevelChange = document.querySelector(".LevelComplete"); 
 
 console.log("Level Change Text Element:", LevelChange); // To check in the console that the UI is there in the scene
@@ -255,6 +273,9 @@ const LevelChangeCollision = () =>{
         gameFinish = true;
         LevelChange.style.display = "block";
 
+        const finalScore = timeLeft; 
+        sendScore(finalScore)
+
         document.addEventListener("click", () => {
             console.log("RestartGame");
             camera.position.set(2, 2, 30);
@@ -267,16 +288,20 @@ const LevelChangeCollision = () =>{
                 buttonData.pressed = false;
                 buttonData.top.position.y = 1.5;
             });
-        });
 
-        // canvas.style.opacity = "0.3";
+            timeLeft = 300;
+
+            const minutes = Math.floor(timeLeft / 60); 
+            const seconds = timeLeft % 60; 
+            const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+            document.getElementById("timer").innerText = `${minutes}:${formattedSeconds}`;
+        });
 
         return;
     }
 
     if (!isLevelChangeColliding) {
         LevelChange.style.display = "none";
-        canvas.style.opacity = "1";
         timerPaused = false;
     }
 
