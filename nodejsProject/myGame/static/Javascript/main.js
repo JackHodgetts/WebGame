@@ -321,13 +321,11 @@ console.log("Interact Text Element:", interactText);
 
 let isButtonColliding = false;
 
-function checkButtonCollision() {
+const checkButtonCollision = () => {
     isButtonColliding = false; 
-
     // Iterate through each button in the scene
     for (let buttonData  of buttons) {
         const buttonTop = buttonData.top;
-
         // Dynamically update bounding box for the button
         const buttonBoundingBox = new THREE.Box3().setFromObject(buttonTop);
 
@@ -336,11 +334,9 @@ function checkButtonCollision() {
             camera.position,
             new THREE.Vector3(0.5, 1.5, 0.5) 
         );
-
         // Check if the player's bounding box intersects with the button's bounding box
         if (buttonBoundingBox.intersectsBox(cameraBoundingBox)) {
             isButtonColliding = true; 
-
             interactText.style.display = "block";
 
             document.addEventListener("keydown", (event) => {
