@@ -223,12 +223,48 @@ createButton({ x: -7, y: 0, z: 1 });
 createButton({ x: -13, y: 0, z: -15 });
 createButton({ x: -10.5, y: 0, z: 18 });
 
-// Level Transition
+// Making the Object that changes the level
 const cudeEnd = new THREE.BoxGeometry( 7, 7, 3);
 const materialend = new THREE.MeshBasicMaterial({color: 0xfaf202});
 const levelEnd = new THREE.Mesh(cudeEnd, materialend);
 scene.add(levelEnd);
 levelEnd.position.set(-2, 3, -32.5)
+
+const LevelChange = document.querySelector(".LevelComplete"); 
+
+console.log("Level Change Text Element:", LevelChange); // To check in the console that the UI is there in the scene
+
+// Collision with the object that changes the level
+let isLevelChangeColliding = false;
+
+const LevelChangeCollision = () =>{
+    isLevelChangeColliding = false;
+
+    const LevelEndBoundingBox = new THREE.Box3().setFromObject(levelEnd);
+
+    // Create a small bounding box around the camera (player)
+    const cameraBoundingBox = new THREE.Box3().setFromCenterAndSize(
+        camera.position,
+        new THREE.Vector3(0.5, 1.5, 0.5) 
+    );
+
+    if (LevelEndBoundingBox.intersectsBox(cameraBoundingBox) && areAllButtonsPressed()){
+        isLevelChangeColliding = true;
+        LevelChange.style.display = "block";
+
+        document.addEventListener("click", () => {
+            //LoadLevel2();
+            console.log("Level Changing Please Wait.")
+        })
+
+        return;
+    }
+
+    if (!isLevelChangeColliding) {
+        LevelChange.style.display = "none";
+    }
+
+}
 
 document.addEventListener("keydown", (event) => {
     switch (event.code) {
@@ -267,7 +303,7 @@ const movePlayer = () => {
     const direction = new THREE.Vector3();
     camera.getWorldDirection(direction);
 
-    if (isButtonColliding && wPressed) {
+    if (isButtonColliding && wPressed || isLevelChangeColliding && wPressed) {
         console.log("Player movement halted due to button collision.");
         return; 
     }
@@ -319,6 +355,7 @@ const interactText = document.querySelector(".Interact-text");
 
 console.log("Interact Text Element:", interactText);
 
+//Button Collision
 let isButtonColliding = false;
 
 const checkButtonCollision = () => {
@@ -372,7 +409,7 @@ const checkButtonCollision = () => {
 //Player Collision
 const checkCollisions = () => {
     updateRaycasters();
-    return raycasters.some(raycaster => raycaster.intersectObjects(walls).some(collision => collision.distance < 0.5)) || checkButtonCollision();
+    return raycasters.some(raycaster => raycaster.intersectObjects(walls).some(collision => collision.distance < 0.5)) || checkButtonCollision() || LevelChangeCollision();
 };
 
 //A function for when all the buttons have be pressed
