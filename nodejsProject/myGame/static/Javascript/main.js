@@ -278,7 +278,7 @@ const LevelChangeCollision = () =>{
         new THREE.Vector3(0.5, 1.5, 0.5) 
     );
 
-    if (LevelEndBoundingBox.intersectsBox(cameraBoundingBox)){
+    if (LevelEndBoundingBox.intersectsBox(cameraBoundingBox) && areAllButtonsPressed()){
         isLevelChangeColliding = true;
         timerPaused = true;
         gameFinish = true;
@@ -286,6 +286,11 @@ const LevelChangeCollision = () =>{
 
         const finalScore = timeLeft; 
         sendScore(finalScore)
+
+        const scoreDisplay = document.getElementById("finalScoreDisplay");
+        if (scoreDisplay) {
+            scoreDisplay.innerText = `Final Score: ${finalScore}`;
+        }
 
         // Prevent replay from triggering if it's already in progress
         if (!replayInProgress) {
