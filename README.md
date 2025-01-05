@@ -43,6 +43,7 @@ cmp5360/user
 - Game has a loading page
 
 ## Reference: 
+- Materials provided during lectures
 - https://pixabay.com/sound-effects/ding-101492/
 - https://pixabay.com/sound-effects/background-music-224633/
 - https://www.youtube.com/watch?v=rHs0b2MaNpg
@@ -55,4 +56,6 @@ cmp5360/user
 - https://github.com/yomotsu/camera-controls/blob/dev/examples/first-person.html
 - https://www.youtube.com/watch?v=2o84lQQVq2E
 - https://www.youtube.com/watch?v=rHs0b2MaNpg
+- https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene
+- https://developer.mozilla.org/en-US/docs/Games/Techniques/Control_mechanisms/Desktop_with_mouse_and_keyboard
 
