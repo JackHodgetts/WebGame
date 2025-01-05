@@ -43,16 +43,16 @@ cmp5360/user
 - Game has a loading page
 
 ## Reference: 
-https://pixabay.com/sound-effects/ding-101492/
-https://pixabay.com/sound-effects/background-music-224633/
-https://www.youtube.com/watch?v=rHs0b2MaNpg
-https://www.uefap.com/speaking/exercise/mazes/mazes.htm
-https://www.pexels.com/search/sky/
-https://sketchfab.com/3d-models/low-poly-character-ef743f4cd0944e33be40a64564991391
-https://pixabay.com/users/freesound_community-46691455/
-https://jsfiddle.net/grmpqhfe/
-https://codepen.io/awkay/pen/ExzGea
-https://github.com/yomotsu/camera-controls/blob/dev/examples/first-person.html
-https://www.youtube.com/watch?v=2o84lQQVq2E
-https://www.youtube.com/watch?v=rHs0b2MaNpg
+- https://pixabay.com/sound-effects/ding-101492/
+- https://pixabay.com/sound-effects/background-music-224633/
+- https://www.youtube.com/watch?v=rHs0b2MaNpg
+- https://www.uefap.com/speaking/exercise/mazes/mazes.htm
+- https://www.pexels.com/search/sky/
+- https://sketchfab.com/3d-models/low-poly-character-ef743f4cd0944e33be40a64564991391
+- https://pixabay.com/users/freesound_community-46691455/
+- https://jsfiddle.net/grmpqhfe/
+- https://codepen.io/awkay/pen/ExzGea
+- https://github.com/yomotsu/camera-controls/blob/dev/examples/first-person.html
+- https://www.youtube.com/watch?v=2o84lQQVq2E
+- https://www.youtube.com/watch?v=rHs0b2MaNpg
 
