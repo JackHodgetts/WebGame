@@ -3,23 +3,23 @@
 Maze Ascendancy is a 3D web game made by Jack Hodgetts using Three.js, JS, HTML, CSS, and ES6.
 
 ## How to play:
-W - Move Forward
-S - Move Backward
-A - Turn Left
-D - Turn Right
-E - Interact
-Mouse Click - Press Buttons on the screen
+- W - Move Forward
+- S - Move Backward
+- A - Turn Left
+- D - Turn Right
+- E - Interact
+- Mouse Click - Press Buttons on the screen
 
 ## How to Win:
 Find the four buttons that are around the maze and leave through the door in 5 minutes. The time you have remaining is your score which is saved on the server in seconds.
 
 ## Game Project folder structure:
-nodejsProject/myGame/static/CSS
-nodejsProject/myGame/static/HTML
-nodejsProject/myGame/static/images
-nodejsProject/myGame/static/Javascript
-nodejsProject/myGame/static/models
-nodejsProject/myGame/app.js
+- nodejsProject/myGame/static/CSS
+- nodejsProject/myGame/static/HTML
+- nodejsProject/myGame/static/images
+- nodejsProject/myGame/static/Javascript
+- nodejsProject/myGame/static/models
+- nodejsProject/myGame/app.js
 
 # Database structure:
 cmp5360/user
