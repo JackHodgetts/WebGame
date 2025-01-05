@@ -48,6 +48,15 @@ document.body.appendChild(stats.dom);
 // AudioLoader
 const audioLoader = new THREE.AudioLoader();
 
+const backgroundSound = new THREE.Audio(listener);
+
+audioLoader.load('../images/background-music-224633.mp3', function (buffer) {
+    backgroundSound.setBuffer(buffer);
+    backgroundSound.setLoop(true);
+    backgroundSound.setVolume(1.0);
+    backgroundSound.play();
+});
+
 // Timer countdown
 const startCountDown = setInterval(() => countdown(), 1000);
 
