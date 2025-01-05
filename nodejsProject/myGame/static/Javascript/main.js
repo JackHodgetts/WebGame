@@ -24,6 +24,8 @@ let yaw = 0;
 let targetYaw = 0;
 let initialYaw = yaw; //For restarting the game
 
+let replayInProgress = false; // A variable to stop the replay from replaying whenever the mouse is clicked
+
 let gameFinish = false;
 
 let mazeDoor = null;
@@ -276,26 +278,39 @@ const LevelChangeCollision = () =>{
         const finalScore = timeLeft; 
         sendScore(finalScore)
 
-        document.addEventListener("click", () => {
-            console.log("RestartGame");
-            camera.position.set(2, 2, 30);
-            camera.rotation.set(0, 0, 0);
-            yaw = initialYaw;
-            gameFinish = false;
-            LevelChange.style.display = "none";
-        
-            buttons.forEach(buttonData => {
-                buttonData.pressed = false;
-                buttonData.top.position.y = 1.5;
-            });
+        // Prevent replay from triggering if it's already in progress
+        if (!replayInProgress) {
+            replayInProgress = true;
 
-            timeLeft = 300;
+            // Event listener to reset game state when clicked
+            const resetGame = () => {
+                console.log("RestartGame");
+                camera.position.set(2, 2, 30);
+                camera.rotation.set(0, 0, 0);
+                yaw = initialYaw;
+                gameFinish = false;
+                LevelChange.style.display = "none";
 
-            const minutes = Math.floor(timeLeft / 60); 
-            const seconds = timeLeft % 60; 
-            const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
-            document.getElementById("timer").innerText = `${minutes}:${formattedSeconds}`;
-        });
+                buttons.forEach(buttonData => {
+                    buttonData.pressed = false;
+                    buttonData.top.position.y = 1.5;
+                });
+
+                timeLeft = 300;
+
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+                document.getElementById("timer").innerText = `${minutes}:${formattedSeconds}`;
+
+                // Remove the click event listener to prevent replay
+                document.removeEventListener("click", resetGame);
+                replayInProgress = false; // Allow replay again after reset
+            };
+
+            // Add event listener to handle reset game action
+            document.addEventListener("click", resetGame);
+        }
 
         return;
     }
