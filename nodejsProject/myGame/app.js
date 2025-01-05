@@ -129,6 +129,25 @@ app.post("/registerform", (req, res) => {
   }
 });
 
+// Hashing the passwords before being saved in the database
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
+// Hashing password before storing
+bcrypt.hash(password, saltRounds, function(err, hashedPassword) {
+  if (err) throw err;
+
+});
+
+// During login, compare password with stored hashed password
+bcrypt.compare(password, storedHashedPassword, function(err, result) {
+  if (result) {
+
+  } else {
+
+  }
+});
+
 app.get('/gameloading', (req, res) => {
   res.sendFile(__dirname + '/static/HTML/gameloading.html')
 })
