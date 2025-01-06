@@ -278,7 +278,7 @@ const LevelChangeCollision = () =>{
         new THREE.Vector3(0.5, 1.5, 0.5) 
     );
 
-    if (LevelEndBoundingBox.intersectsBox(cameraBoundingBox) && areAllButtonsPressed()){
+    if (LevelEndBoundingBox.intersectsBox(cameraBoundingBox)){
         isLevelChangeColliding = true;
         timerPaused = true;
         gameFinish = true;
@@ -479,7 +479,7 @@ const checkButtonCollision = () => {
 //Player Collision
 const checkCollisions = () => {
     updateRaycasters();
-    return raycasters.some(raycaster => raycaster.intersectObjects(walls).some(collision => collision.distance < 0.5)) || checkButtonCollision() || LevelChangeCollision();
+    return raycasters.some(raycaster => raycaster.intersectObjects(walls).some(collision => collision.distance < 0.5)) || checkButtonCollision() || LevelChangeCollision() || collisionDoor();
 };
 
 //A function for when all the buttons have be pressed
@@ -500,6 +500,30 @@ const openMazeDoor = () => {
         doorOpen = true;
     }
 };
+
+let isdoorColliding = false;
+
+const collisionDoor = () =>{
+    isdoorColliding = false;
+
+    const doorBoundingBox = new THREE.Box3().setFromObject(mazeDoor);
+
+
+    const cameraBoundingBox = new THREE.Box3().setFromCenterAndSize(
+        camera.position,
+        new THREE.Vector3(0.5, 1.5, 0.5) 
+    );
+
+    if(doorBoundingBox.intersectsBox(cameraBoundingBox)){
+        console.log("Collision detected with Door:", mazeDoor);
+        isdoorColliding = true;
+
+        return true;
+    }
+
+    return false;
+
+}
 
 const updateGameLogic = () => {
     if (areAllButtonsPressed() && !doorOpen) {
