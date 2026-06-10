@@ -1,6 +1,11 @@
 # Names
 
+Project Name:
+
 Web Game Development
+
+Game Name:
+
 Maze Ascendancy
 
 ## Overview
