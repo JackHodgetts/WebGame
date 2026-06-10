@@ -1,30 +1,32 @@
-## WebGameDevelopment
+# Names
 
-Maze Ascendancy is a 3D web game made by Jack Hodgetts using Three.js, JS, HTML, CSS, and ES6.
+Web Game Development
+Maze Ascendancy
 
-## How to play:
-- W - Move Forward
-- S - Move Backward
-- A - Turn Left
-- D - Turn Right
-- E - Interact
-- Mouse Click - Press Buttons on the screen
+## Overview
 
-## How to Win:
-Find the four buttons that are around the maze and leave through the door in 5 minutes. The time you have remaining is your score which is saved on the server in seconds.
+This project aimed to create a 3D web game that uses a server-side data to store, retrieve and amend user and game data. The application should be web-based and be responsive to different screen sizes. 
 
-## Game Project folder structure:
-- nodejsProject/myGame/static/CSS
-- nodejsProject/myGame/static/HTML
-- nodejsProject/myGame/static/images
-- nodejsProject/myGame/static/Javascript
-- nodejsProject/myGame/static/models
-- nodejsProject/myGame/app.js
+## Screenshots
 
-# Database structure:
-cmp5360/user
+<img width="1919" height="823" alt="image" src="https://github.com/user-attachments/assets/5f20fb79-1f54-4cdb-b3c9-09486cef5967" />
+The Index page of the website
 
-## Key Points:
+<img width="1572" height="877" alt="image" src="https://github.com/user-attachments/assets/9c0a31be-1f7e-48f4-8e3b-85bd71f6482e" />
+The HTML code for the Index page of the website
+
+## Technologies Used
+
+- HTML
+- CSS
+- Javascript
+- ES6
+- Three.js
+- XAM
+
+## Key Features
+
+- Responsive Web Pages
 - Website Design - Index Page, Game Page, Game loading Page, 404 Page, Login Page, and Register Page.
 - Game Assets - Maze Landscape
 - Game Material - Maze Texture and Skybox
@@ -41,6 +43,45 @@ cmp5360/user
 - Game working on Google Chrome
 - Game has a restart button
 - Game has a loading page
+
+## Challenges and Solutions
+
+### Challenge 1:
+
+Writing full HTML, JavaScript, and CSS for the first time was a new but fun experience from what I was used to. 
+
+### Solution:
+
+I used different videos, online forms, and listened to my teacher to learn and understand the coding in languages that were new to me.
+
+### Challenge 2:
+
+Creating a collision-based code for a full 3D maze in JavaScript was a real challenge because I had to make a raycast in all directions around the player and constantly check whenever the player is moving to check if the maze wall is hitting the raycast.
+
+### Solution 2:
+
+The solution to this was to find a video that demonstrates how to do a raycast in JavaScript and then take it further by blocking the player when it overlaps with walls.
+
+<img width="1097" height="381" alt="image" src="https://github.com/user-attachments/assets/b7e8d4c4-4f48-425f-85d1-ac491159c11b" />
+<img width="1447" height="93" alt="image" src="https://github.com/user-attachments/assets/8efbc242-fcea-4361-a487-425832025bc9" />
+This shows the raycast in each direction and the function that checks the collision
+
+## What I Learned
+
+- I learnt how to write in HTML, JavaScript, and CSS to design and create a 3D web game, and I will be able to apply this in different ways to design more games or create different websites.
+- I learnt the basics of a back-end server functionality to create a basic login and password system and I am willing to continue this and learn more about how servers work when running a website,
+
+## Repository Information
+
+Project Type: University Project
+
+Status: Complete/Archived
+
+Year: 2024
+
+Author: Jack Hodgetts
+
+P.S Some features will no longer work due to folder changes, and the old XAM no longer being linked
 
 ## Reference: 
 - Materials provided during lectures
